@@ -2,6 +2,4 @@
 
 cd $(cd $(dirname $0) && pwd)/../../
 
-
-
 ./vendor/bin/phpunit
