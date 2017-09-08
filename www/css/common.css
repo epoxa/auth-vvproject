@@ -1,0 +1,57 @@
+.inline {
+    display: inline!important;
+}
+
+.monospace {
+    font-family: monospace;
+}
+
+.language-selector {
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.inline-menu-container > * {
+    display: inline-block!important;
+    padding: 5px 8px!important;
+    border-radius: 5px;
+    margin-left: 8px;
+}
+
+.dropdown-menu > li > a.text-muted {
+    color: silver;
+}
+
+.container {
+    max-width: 730px;
+}
+
+.label-pill {
+    font-size: 100%;
+    padding-right: .6em;
+    padding-left: .6em;
+    border-radius: 10rem;
+}
+
+.icon-larger {
+    font-size: 150%;
+}
+
+/* Bookmarklet */
+
+.bm-template {
+    display: inline-block;
+    margin: 12px auto;
+    padding: 8px 12px;
+    background: cornsilk;
+    border: dashed 1px grey;
+    font-weight: bold;
+    text-decoration: none!important;
+}
+
+/* Language selector */
+
+.dropdown-menu {
+    min-width: 200px;
+}

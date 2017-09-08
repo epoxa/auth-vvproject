@@ -1,0 +1,40 @@
+version: "2.2"
+services:
+  web:
+    image: nginx
+    hostname: web
+    links:
+      - php
+    depends_on:
+      - php
+    expose:
+      - "80"
+      - "443"
+    volumes:
+      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - ./..:/var/www/html
+  php:
+    image: php:fpm
+    links:
+      - sql
+    expose:
+      - "9000"
+    volumes:
+      - ./..:/var/www/html
+      - ./app/config/env.php:/var/www/html/config/env.php
+    command: sh -c '/var/www/html/docker/sh/setup.sh'
+    healthcheck:
+      test: "sh -c '/var/www/html/docker/sh/healthcheck.sh'"
+      interval: 20s
+      timeout: 5s
+      retries: 1
+
+  sql:
+    image: mariadb
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+      MYSQL_DATABASE: auth
+      MYSQL_USER: yy
+      MYSQL_PASSWORD: docker
+    expose:
+      - "3306"

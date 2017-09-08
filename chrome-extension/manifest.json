@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+
+  "name": "vvproject",
+  "description": "Вокруг веба",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "logo400-empty.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "activeTab",
+    "https://ajax.googleapis.com/",
+    "https://vvproject.ru/",
+    "https://vvproject.com/"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://vvproject.ru https://vvproject.com; object-src 'self' https://vvproject.ru https://vvproject.com",
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["boot.js"]
+    }
+  ]
+}
+

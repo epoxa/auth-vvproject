@@ -1,0 +1,24 @@
+version: "2.2"
+services:
+  php:
+    environment:
+      YY_TEST_BROWSER: "$YY_TEST_BROWSER"
+      YY_TEST_BASE_URL: http://web
+      YY_TEST_SELENIUM_HOST: hub
+      YY_TEST_SELENIUM_PORT: 4444
+    links:
+      - hub
+  hub:
+    image: selenium/hub
+    environment:
+      CHROMEDRIVER_WHITELISTED_IPS: ""
+    expose:
+      - "4444"
+  node:
+    image: "selenium/node-$YY_TEST_BROWSER:3.4"
+    links:
+      - web
+      - hub
+    environment:
+      HUB_PORT_4444_TCP_ADDR: hub
+      HUB_PORT_4444_TCP_PORT: 4444
