@@ -37,8 +37,8 @@ class TestFirst extends BrowserTestCase
 // assertText | //div[@id='_YY_1']/div[2]/p[2] | Creating new character as simple as one-two-three:
         $result = $this->byXPath("//div[@id='_YY_1']/div[2]/p[2]")->text();
         $this->assertEquals("Creating new character as simple as one-two-three:", $result);
-// click | link=Create new character |
-        $this->byLinkText("Create new character")->click();
+// click | //a[contains(text(),'Create new character')] |
+        $this->byXPath("//a[contains(text(),'Create new character')]")->click();
 // assertText | css=div.well.clearfix > span.text-muted | Select language first
         $result = $this->byCssSelector("div.well.clearfix > span.text-muted")->text();
         $this->assertEquals("Select language first", $result);
