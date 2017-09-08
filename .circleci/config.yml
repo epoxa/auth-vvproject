@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/auth
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run:
+          command: |
+            ./tests/run-all-in-docker.sh
