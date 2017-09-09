@@ -56,6 +56,10 @@ return [
         '556b050ce914d18480d6ea30308c7790' => 'Recover',
         'bbab88e934fc6ba37d428516e091610d' => 'Something went wrong. Your bookmarklet seems to be invalid. Enter your secret key to restore bookmarklet.',
         '51fd789b16ca8c4aa6083e200427814a' => 'Character name',
+        '4ffece902ddce4e659210a69fd858029' => 'Access button',
+        '18db2f70f83c87397111e521dfed9874' => 'Already installed',
+        '7b4d917229221f1292dd0dc7b693cccf' => 'reinstall',
+        '7c9487f4c2059ab10ff4e7b23d6d670c' => 'Keep your key securely to prevent character stealing!',
         '_YYID' => '0c16db1bbc5512c93310721f60e31079',
     ],
 

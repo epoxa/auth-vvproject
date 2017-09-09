@@ -12,6 +12,7 @@ services:
       - "443"
     volumes:
       - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - ./etc/cert:/etc/cert
       - ./..:/var/www/html
   php:
     image: php:fpm
