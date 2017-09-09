@@ -47,5 +47,10 @@ return [
     '556b050ce914d18480d6ea30308c7790' => NULL,
     'bbab88e934fc6ba37d428516e091610d' => 'Something went wrong. Your bookmarklet seems to be invalid. Enter your secret key to restore bookmarklet.',
     '51fd789b16ca8c4aa6083e200427814a' => NULL,
+    'ebf78b512222fe4dcd14e7d5060a15b0' => NULL,
+    '4ffece902ddce4e659210a69fd858029' => 'Access button',
+    '18db2f70f83c87397111e521dfed9874' => 'Installed',
+    '7b4d917229221f1292dd0dc7b693cccf' => 'reinstall',
+    'a88f05b6c963e145a45b58c47cd42a41' => 'hide',
     '_YYID' => 'c371685925d42e672c2d1514018c26c7',
 ];

@@ -44,12 +44,24 @@ if (isset(YY::$CURRENT_VIEW['request']['build'])) {
 
     if (isset(YY::$CURRENT_VIEW['pathInfo']) && preg_match('#^/authorize/?\?#', YY::$CURRENT_VIEW['pathInfo'])) {
 
+        if (isset(YY::$CURRENT_VIEW['request']['client_id'])) {
+            $client_id = YY::$CURRENT_VIEW['request']['client_id'];
+        } else {
+            $client_id = 'public';
+        }
+
+        if (isset(YY::$CURRENT_VIEW['request']['scope'])) {
+            $scope = YY::$CURRENT_VIEW['request']['scope'];
+        } else {
+            $scope = 'public';
+        }
+
         // Using web-session instead of incarnation allows to change character transparently
 
         $_SESSION['aim'] = new Aim([
             'type' => 'oauth',
-            'client_id' => YY::$CURRENT_VIEW['request']['client_id'],
-            'scope' => YY::$CURRENT_VIEW['request']['scope'],
+            'client_id' => $client_id,
+            'scope' => $scope,
             'redirect_uri' => YY::$CURRENT_VIEW['request']['redirect_uri'],
             'state' => YY::$CURRENT_VIEW['request']['state'],
         ]);

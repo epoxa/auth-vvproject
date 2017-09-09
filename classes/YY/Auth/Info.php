@@ -47,6 +47,15 @@ class Info extends Robot
                         <?php endif; ?>
                     </td>
                 </tr>
+                <tr>
+                    <td><?= $this->TXT('Access button') ?></td>
+                    <td>
+                       <?= $this->TXT('Already installed') ?>
+                        <span class="pull-right">
+                            <?= $this->CMD('reinstall', 'reinstall'); ?>
+                        </span>
+                    </td>
+                </tr>
             </table>
 
         </div>
@@ -55,12 +64,20 @@ class Info extends Robot
 
     function displayKey()
     {
+        $warning = YY::Translate('Keep your key securely to prevent character stealing!');
+        YY::clientExecute('alert(' . json_encode($warning) . ')');
         $this['keyDisplayed'] = true;
     }
 
     function hideKey()
     {
         unset($this['keyDisplayed']);
+    }
+
+    function reinstall()
+    {
+        YY::$ME['curator']->setPage('creator');
+        YY::$ME['curator']['creator']['languageConfirmed'] = true;
     }
 
 }

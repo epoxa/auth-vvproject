@@ -11,6 +11,10 @@ class TestFirst extends BrowserTestCase
         $this->setBrowserUrl(getenv('YY_TEST_BASE_URL')); // http://yy.local/
         $this->setHost(getenv('YY_TEST_SELENIUM_HOST')); // 127.0.0.1
         $this->setPort((int)getenv('YY_TEST_SELENIUM_PORT')); // 4444
+        $this->setDesiredCapabilities([
+            'acceptSslCerts' => true,
+            'acceptInsecureCerts' => true,
+        ]);
     }
 
     public function setUpPage()
@@ -18,7 +22,7 @@ class TestFirst extends BrowserTestCase
         $this->timeouts()->implicitWait(5000);
     }
 
-    public function test_demo()
+    public function test_install()
     {
         $this->url("/");
         $result = $this->title();
@@ -72,6 +76,31 @@ class TestFirst extends BrowserTestCase
 // storeText | css=a.bm-template | bookmarkletText
         $bookmarkletText = $this->byCssSelector("a.bm-template")->text();
         $this->assertEquals($userName, $bookmarkletText);
+// storeAttribute | css=a.bm-template | script
+        $script = $this->byCssSelector("a.bm-template")->attribute("href");
+// Emulate press bookmarklet
+        $script = preg_replace('/^javascript:/','',$script);
+        $script = urldecode($script);
+//        $this->assertEquals('!', $script);
+        $this->exec($script);
+        $result = $this->byCssSelector("h1")->text();
+        $this->assertEquals("Установка завершена", $result);
+        $this->byLinkText('Готово')->click();
+// assertText | css=span.label.label-info | Новичок
+        $result = $this->byCssSelector("span.label.label-info")->text();
+        $this->assertEquals("Новичок", $result);
+
+    }
+
+    public function test_client()
+    {
+        $this->url("http://client");
+        $this->assertTextPresent('You are not logged in');
+        $this->byLinkText("Log in")->click();
+        $result = $this->title();
+        $this->assertEquals('Authentication', $result);
+        sleep(2);
+//        $this->assertEquals('!', $this->source());
     }
 
 }
