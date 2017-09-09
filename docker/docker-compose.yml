@@ -11,7 +11,7 @@ services:
       - "80"
       - "443"
     volumes:
-      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - ./etc/nginx/conf.d/app:/etc/nginx/conf.d
       - ./etc/cert:/etc/cert
       - ./..:/var/www/html
   php:

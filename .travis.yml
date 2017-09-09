@@ -14,7 +14,7 @@ script:
 - ./tests/run-all-in-docker.sh
 after_failure:
 - docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml ps
-- docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs client
-- docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs client_php
+- docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs web
+- docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs php
 
 

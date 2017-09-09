@@ -16,7 +16,7 @@ services:
     expose:
       - "80"
     volumes:
-      - ./etc/nginx/conf.d:/etc/nginx/conf.d
+      - ./etc/nginx/conf.d/client:/etc/nginx/conf.d
       - ./etc/cert:/etc/cert
       - ./app/client:/var/www/html
   client_php:
