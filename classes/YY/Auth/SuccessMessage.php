@@ -14,11 +14,11 @@ class SuccessMessage extends Robot
         ?>
         <div class="container">
             <h1><?= $this->TXT("Bookmarklet installed") ?></h1>
-            <div class="well clearfix">
-                <?= $this->TXT("The last version of bookmarklet installed successfully") ?>
-            </div>
+            <p><?= $this->TXT(["Hello %s", YY::$ME['NAME']]) ?></p>
+            <p><?= $this->TXT("The last version of bookmarklet installed successfully") ?></p>
+            <p><?= $this->TXT("Keep your key securely to prevent character stealing") ?></p>
             <div class="col-md-12 text-center">
-                <?= $this->CMD("Done", 'done') ?>
+                <?= $this->CMD("Done", 'done', ['class' => 'btn btn-primary']) ?>
             </div>
         </div>
         <?php

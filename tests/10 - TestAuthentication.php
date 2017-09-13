@@ -2,7 +2,9 @@
 
 use YY\Develop\BrowserTestCase;
 
-class TestFirst extends BrowserTestCase
+require_once __DIR__ . '/../config/config.php';
+
+class TestAuthentication extends BrowserTestCase
 {
 
     protected function setUp()
@@ -15,6 +17,8 @@ class TestFirst extends BrowserTestCase
             'acceptSslCerts' => true,
             'acceptInsecureCerts' => true,
         ]);
+        $this->setArtifactFolder(LOG_DIR);
+        parent::setUp();
     }
 
     public function setUpPage()
@@ -92,6 +96,14 @@ class TestFirst extends BrowserTestCase
 
     }
 
+    public function test_install2()
+    {
+        $this->url("/");
+        $this->quickReg();
+        $result = $this->byCssSelector("span.label.label-info")->text();
+        $this->assertEquals("Newbie", $result);
+    }
+
     public function test_client()
     {
         $this->url("http://client");
@@ -99,8 +111,32 @@ class TestFirst extends BrowserTestCase
         $this->byLinkText("Log in")->click();
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
-        sleep(2);
-//        $this->assertEquals('!', $this->source());
+        $user = $this->quickReg();
+        $this->assertTextPresent("Hello, $user[name]!");
+        $this->assertEquals("http://client/index.php", $this->url());
+    }
+
+    protected function quickReg()
+    {
+        $this->byLinkText("English")->click();
+        $this->byCssSelector("a.btn-primary i.fa-plus")->click();
+        $this->byCssSelector("a.btn-default")->click();
+        $this->byCssSelector("a.btn-default")->click();
+        $script = $this->byCssSelector("a.bm-template")->attribute("href");
+        $script = preg_replace('/^javascript:/','',$script);
+        $script = urldecode($script);
+        $this->exec($script);
+        $result = $this->title();
+        $this->assertEquals('Authentication', $result);
+        $greeting = $this->byXPath('//p')->text();
+        $greeting = explode(' ', $greeting);
+        $this->assertEquals('Hello', $greeting[0]);
+        $name = $greeting[1];
+//        $this->byCssSelector("a.btn-primary")->click(); // TODO: Does not work! WTF?
+        $this->byLinkText("Done")->click();
+        return [
+            'name' => $name,
+        ];
     }
 
 }

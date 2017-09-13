@@ -6,7 +6,7 @@ session_start();
 
 $redirect_uri =
     (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') .
-    $_SERVER['HTTP_HOST'] . 'login.php';
+    $_SERVER['HTTP_HOST'] . '/login.php';
 
 if (empty($_GET['code'])) {
 
@@ -46,6 +46,8 @@ if (empty($_GET['code'])) {
 
         $token_endpoint = AUTH_VVPROJECT_HOST . '/token';
         $curl = curl_init($token_endpoint);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, [
             'code' => $_GET['code'],
