@@ -1,63 +1,56 @@
--- MySQL dump 10.15  Distrib 10.0.29-MariaDB, for debian-linux-gnu (x86_64)
---
--- Host: 127.0.0.1    Database: 127.0.0.1
--- ------------------------------------------------------
--- Server version	10.1.21-MariaDB-1~jessie
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `emails`
---
-
-DROP TABLE IF EXISTS `emails`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `emails` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ADDRESS` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `SUBJECT` varchar(250) COLLATE utf8_unicode_ci NOT NULL,
-  `BODY` longtext COLLATE utf8_unicode_ci NOT NULL,
-  `IS_SENT` bit(1) NOT NULL DEFAULT b'0',
-  `TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `emails`
---
-
-LOCK TABLES `emails` WRITE;
-/*!40000 ALTER TABLE `emails` DISABLE KEYS */;
-/*!40000 ALTER TABLE `emails` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `names_en`
---
-
-DROP TABLE IF EXISTS `names_en`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `names_en` (
-  `NAME` varchar(148) COLLATE utf8_unicode_ci NOT NULL,
-  `GENDER` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `names_en`
---
+CREATE TABLE emails
+(
+    ID INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    ADDRESS VARCHAR(64) NOT NULL,
+    SUBJECT VARCHAR(250) NOT NULL,
+    BODY LONGTEXT NOT NULL,
+    IS_SENT BIT DEFAULT b'0' NOT NULL,
+    TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+);
+CREATE TABLE hosts
+(
+    ID INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    NAME VARCHAR(255) NOT NULL
+);
+CREATE UNIQUE INDEX unique_NAME ON hosts (NAME);
+CREATE TABLE hosts_registered
+(
+    NAME VARCHAR(255) PRIMARY KEY NOT NULL,
+    REDIRECT_URI VARCHAR(2048)
+);
+CREATE UNIQUE INDEX unique_NAME ON hosts_registered (NAME);
+CREATE TABLE names_en
+(
+    NAME VARCHAR(148) NOT NULL,
+    GENDER CHAR(1)
+);
+CREATE TABLE names_ru
+(
+    NAME VARCHAR(148) NOT NULL,
+    GENDER CHAR(1)
+);
+CREATE TABLE users
+(
+    ID INT UNSIGNED PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    NAME VARCHAR(14) NOT NULL,
+    PUBLIC_KEY CHAR(32) NOT NULL,
+    CURRENT_KEY CHAR(32) NOT NULL,
+    PARENT_ID INT UNSIGNED,
+    CAME_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    CAME_FROM VARCHAR(1024),
+    CAME_IP VARCHAR(45) NOT NULL,
+    STATE INT UNSIGNED NOT NULL,
+    INCARNATION CHAR(32),
+    LANGUAGE VARCHAR(50),
+    LAST_ACTIVITY TIMESTAMP DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    LAST_IP VARCHAR(45) NOT NULL,
+    LAST_HITS INT UNSIGNED DEFAULT 1 NOT NULL,
+    ACTIVE_DAYS INT UNSIGNED,
+    ENGINE VARCHAR(250),
+    LOCATION VARCHAR(250)
+);
+CREATE UNIQUE INDEX IDX_PUBLIC_KEY ON users (PUBLIC_KEY);
+CREATE INDEX IDX_PARENT ON users (PARENT_ID);
 
 LOCK TABLES `names_en` WRITE;
 /*!40000 ALTER TABLE `names_en` DISABLE KEYS */;
@@ -65,22 +58,6 @@ INSERT INTO `names_en` VALUES ('ackerley','M'),('acton','M'),('adamaris','F'),('
 /*!40000 ALTER TABLE `names_en` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `names_ru`
---
-
-DROP TABLE IF EXISTS `names_ru`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `names_ru` (
-  `NAME` varchar(148) COLLATE utf8_unicode_ci NOT NULL,
-  `GENDER` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `names_ru`
---
 
 LOCK TABLES `names_ru` WRITE;
 /*!40000 ALTER TABLE `names_ru` DISABLE KEYS */;
@@ -88,45 +65,3 @@ INSERT INTO `names_ru` VALUES ('абрам','M'),('авангард','M'),('ав
 /*!40000 ALTER TABLE `names_ru` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `users`
---
-
-DROP TABLE IF EXISTS `users`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `users` (
-  `ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `NAME` varchar(14) COLLATE utf8_unicode_ci NOT NULL,
-  `PUBLIC_KEY` char(32) COLLATE utf8_unicode_ci NOT NULL,
-  `CURRENT_KEY` char(32) COLLATE utf8_unicode_ci NOT NULL,
-  `PARENT_ID` int(10) unsigned DEFAULT NULL,
-  `CAME_DATE` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `CAME_FROM` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `CAME_IP` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `STATE` int(10) unsigned NOT NULL,
-  `INCARNATION` char(32) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `LANGUAGE` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `LAST_ACTIVITY` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
-  `LAST_IP` varchar(45) COLLATE utf8_unicode_ci NOT NULL,
-  `LAST_HITS` int(6) unsigned NOT NULL DEFAULT '1',
-  `ACTIVE_DAYS` int(10) unsigned DEFAULT NULL,
-  `ENGINE` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `LOCATION` varchar(250) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `IDX_PUBLIC_KEY` (`PUBLIC_KEY`),
-  KEY `IDX_PARENT` (`PARENT_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2017-09-05  0:25:20

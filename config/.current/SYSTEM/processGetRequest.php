@@ -76,14 +76,22 @@ if ($viewId === 'boot') {
             // 3) show site menu,
             // ... etc
 
-            if ($site === 'community.vvproject.com' || $site === 'community.vvproject.local') { // Hardcoded for now
+            $host = YY::Config('sites')->getHostInfo(['NAME' => $site]);
+
+            if ($host && $host['REDIRECT_URI']) {
 
                 assert(!$isWindowed);
 
                 $code = YY::GenerateNewYYID();
 
-                $redirect_uri = "https://$site/auth/vvproject?code=$code&state=public";
-                $redirect_uri = json_encode($redirect_uri);
+                $url = parse_url($host['REDIRECT_URI']);
+                $url = ((isset($url["scheme"])) ? $url["scheme"] . "://" : "https://")
+//                    . ((isset($url["user"])) ? $url["user"]
+//                        . ((isset($url["pass"])) ? ":" . $url["pass"] : "") . "@" : "")
+                    . ((isset($url["host"])) ? $url["host"] : "auth.vvproject.com")
+                    . ((isset($url["port"])) ? ":" . $url["port"] : "")
+                    . (isset($url['path']) ? $url['path'] : '')
+                    . '?' . (isset($url['query']) ? $url['query'] . '&' : '') . "code=$code&state=public";
 
                 $user_info = [
                     'public_key' => YY::$ME['PUBLIC_KEY'],
@@ -91,7 +99,8 @@ if ($viewId === 'boot') {
                     'language' => isset(YY::$ME['LANGUAGE']) ? YY::$ME['LANGUAGE'] : null,
                     'age' => floor((time() - YY::$ME['CAME_DATE']) / (24 * 3600)),
                     'active_days' => YY::$ME['ACTIVE_DAYS'],
-                    'redirect_uri' => "https://$site/auth/vvproject",
+                    'redirect_uri' => $host['REDIRECT_URI'],
+                    'debug' => $url,
                 ];
 
 
@@ -101,7 +110,8 @@ if ($viewId === 'boot') {
                 $fileName = TOKENS_DIR . $code;
                 file_put_contents($fileName, json_encode($user_info));
 
-                echo "location.replace($redirect_uri)";
+                $url = json_encode($url);
+                echo "location.replace($url)";
 
             } else {
 

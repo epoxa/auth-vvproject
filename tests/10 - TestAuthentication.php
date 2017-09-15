@@ -2,10 +2,13 @@
 
 use YY\Develop\BrowserTestCase;
 
+require_once __DIR__ . '/../config/env.php';
 require_once __DIR__ . '/../config/config.php';
 
 class TestAuthentication extends BrowserTestCase
 {
+
+    private $bookmarkletScript;
 
     protected function setUp()
     {
@@ -104,7 +107,7 @@ class TestAuthentication extends BrowserTestCase
         $this->assertEquals("Newbie", $result);
     }
 
-    public function test_client()
+    public function test_public_client()
     {
         $this->url("http://client");
         $this->assertTextPresent('You are not logged in');
@@ -112,6 +115,40 @@ class TestAuthentication extends BrowserTestCase
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
         $user = $this->quickReg();
+        sleep(1);
+        $this->assertTextPresent("Hello, $user[name]!");
+        $this->assertEquals("http://client/index.php", $this->url());
+    }
+
+    public function test_registered_client()
+    {
+        $db = new PDO(
+            $_SERVER['ENV']['YY_AUTH_MYSQL_DATASOURCE'], $_SERVER['ENV']['YY_AUTH_MYSQL_USER'], $_SERVER['ENV']['YY_AUTH_MYSQL_PASSWORD']
+        );
+        $db->exec("INSERT INTO hosts(NAME) VALUES('client') ON DUPLICATE KEY UPDATE ID = LAST_INSERT_ID(ID)");
+        $clientHostId = $db->lastInsertId();
+        $db->exec("INSERT IGNORE INTO hosts_registered(NAME, REDIRECT_URI) VALUES ('client', 'http://client/login.php')");
+
+        $this->url("/");
+        $user = $this->quickReg();
+
+        $this->url("http://client");
+        $this->assertTextPresent('You are not logged in');
+
+//        $this->assertEquals('!', $this->bookmarkletScript);
+
+//        $this->installConsoleHook();
+//        try {
+//            $this->exec($this->bookmarkletScript);
+//        } catch (Exception $e) {
+//        }
+//        $log = $this->getConsoleMessages();
+//        $this->assertEquals('!', print_r($log, true));
+
+//        $result = $this->title();
+//        $this->assertEquals('Authentication', $result);
+
+        $this->exec($this->bookmarkletScript);
         $this->assertTextPresent("Hello, $user[name]!");
         $this->assertEquals("http://client/index.php", $this->url());
     }
@@ -125,6 +162,7 @@ class TestAuthentication extends BrowserTestCase
         $script = $this->byCssSelector("a.bm-template")->attribute("href");
         $script = preg_replace('/^javascript:/','',$script);
         $script = urldecode($script);
+        $this->bookmarkletScript = $script;
         $this->exec($script);
         $result = $this->title();
         $this->assertEquals('Authentication', $result);

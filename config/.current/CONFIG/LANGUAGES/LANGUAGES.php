@@ -60,6 +60,8 @@ return [
         '18db2f70f83c87397111e521dfed9874' => 'Already installed',
         '7b4d917229221f1292dd0dc7b693cccf' => 'reinstall',
         '7c9487f4c2059ab10ff4e7b23d6d670c' => 'Keep your key securely to prevent character stealing!',
+        '0ddbacf45ccb69765dca81521d95e629' => 'Hello %s',
+        '255e209aba861388275e44105c6ebdda' => 'Keep your key securely to prevent character stealing',
         '_YYID' => '0c16db1bbc5512c93310721f60e31079',
     ],
 

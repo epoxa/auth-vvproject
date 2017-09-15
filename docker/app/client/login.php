@@ -33,9 +33,9 @@ if (empty($_GET['code'])) {
     $state = $_SESSION['state'];
     unset($_SESSION['state']);
 
-    if ($_GET['state'] !== $state) { // Ensure state param is correct
+    if (!((!$state && $_GET['state'] === 'public') || ($_GET['state'] === $state))) { // Ensure state param is correct (or public)
 
-        echo "<p>Login failed: <span class='error'>invalid state</span>. Expected state [$_SESSION[state]] but received [$state].</p>";
+        echo "<p>Login failed: <span class='error'>invalid state</span>. Expected state [$state] but received [$_GET[state]].</p>";
         unset($state);
         echo "<p><a href='login.php'>Retry</a></p>";
         echo "<p><a href='index.php'>Cancel</a></p>";
