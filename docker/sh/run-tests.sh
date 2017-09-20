@@ -3,5 +3,4 @@
 cd $(cd $(dirname $0) && pwd)/../../
 
 ./vendor/bin/phpunit
-#./vendor/bin/phpunit --filter test_install
-#./vendor/bin/phpunit --filter test_registered_client
+#./vendor/bin/phpunit --filter test_install2

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "3303367a7407ec7aeba0a470dedbb71c",
+    "content-hash": "06a974b9d559895e7a9b83ed8a37f576",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -1255,12 +1255,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "ed85f121340bfeb8378cf736a1332a505f8382f1"
+                "reference": "d0fc29c14e486837da0f0734c3388a5761dd8ae4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/ed85f121340bfeb8378cf736a1332a505f8382f1",
-                "reference": "ed85f121340bfeb8378cf736a1332a505f8382f1",
+                "url": "https://api.github.com/repos/symfony/console/zipball/d0fc29c14e486837da0f0734c3388a5761dd8ae4",
+                "reference": "d0fc29c14e486837da0f0734c3388a5761dd8ae4",
                 "shasum": ""
             },
             "require": {
@@ -1316,7 +1316,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2017-09-11 21:23:16"
+            "time": "2017-09-15 10:12:22"
         },
         {
             "name": "symfony/debug",
@@ -1324,12 +1324,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/debug.git",
-                "reference": "14076792065c98c32c234fbb94da9a478b394281"
+                "reference": "24964d26e28a77b027c38f4d8208ef714221718a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/debug/zipball/14076792065c98c32c234fbb94da9a478b394281",
-                "reference": "14076792065c98c32c234fbb94da9a478b394281",
+                "url": "https://api.github.com/repos/symfony/debug/zipball/24964d26e28a77b027c38f4d8208ef714221718a",
+                "reference": "24964d26e28a77b027c38f4d8208ef714221718a",
                 "shasum": ""
             },
             "require": {
@@ -1372,7 +1372,7 @@
             ],
             "description": "Symfony Debug Component",
             "homepage": "https://symfony.com",
-            "time": "2017-09-12 08:02:51"
+            "time": "2017-09-15 10:58:45"
         },
         {
             "name": "symfony/event-dispatcher",
@@ -1380,12 +1380,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "807df6df951dba375fc8dc766a36a012360e9ce8"
+                "reference": "2766c22a2a7d2a8317c575c2912f61ed39684107"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/807df6df951dba375fc8dc766a36a012360e9ce8",
-                "reference": "807df6df951dba375fc8dc766a36a012360e9ce8",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/2766c22a2a7d2a8317c575c2912f61ed39684107",
+                "reference": "2766c22a2a7d2a8317c575c2912f61ed39684107",
                 "shasum": ""
             },
             "require": {
@@ -1435,7 +1435,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2017-09-11 20:45:17"
+            "time": "2017-09-15 10:12:22"
         },
         {
             "name": "symfony/http-foundation",
@@ -1443,12 +1443,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "eb635edacc95e9be0eaed39d65f7e320efb6f70c"
+                "reference": "fb5f7ade67d27cf480e0d4d5c7e97267feb29035"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/eb635edacc95e9be0eaed39d65f7e320efb6f70c",
-                "reference": "eb635edacc95e9be0eaed39d65f7e320efb6f70c",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/fb5f7ade67d27cf480e0d4d5c7e97267feb29035",
+                "reference": "fb5f7ade67d27cf480e0d4d5c7e97267feb29035",
                 "shasum": ""
             },
             "require": {
@@ -1488,7 +1488,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "https://symfony.com",
-            "time": "2017-09-11 21:34:45"
+            "time": "2017-09-15 17:11:35"
         },
         {
             "name": "symfony/http-kernel",
@@ -1496,12 +1496,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "a29b12f878f1493428cca25997c4199955b2bc0e"
+                "reference": "6b02fe3e836934adbfccbbee2eebf9789e107bcd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/a29b12f878f1493428cca25997c4199955b2bc0e",
-                "reference": "a29b12f878f1493428cca25997c4199955b2bc0e",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/6b02fe3e836934adbfccbbee2eebf9789e107bcd",
+                "reference": "6b02fe3e836934adbfccbbee2eebf9789e107bcd",
                 "shasum": ""
             },
             "require": {
@@ -1573,7 +1573,7 @@
             ],
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
-            "time": "2017-09-11 21:23:16"
+            "time": "2017-09-15 17:11:35"
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -1640,12 +1640,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "5bbc256f1dc5793634eb9fe70a70cd63107c2463"
+                "reference": "257f412706039f72e05b60a0f5a548527a8adc9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/5bbc256f1dc5793634eb9fe70a70cd63107c2463",
-                "reference": "5bbc256f1dc5793634eb9fe70a70cd63107c2463",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/257f412706039f72e05b60a0f5a548527a8adc9e",
+                "reference": "257f412706039f72e05b60a0f5a548527a8adc9e",
                 "shasum": ""
             },
             "require": {
@@ -1710,82 +1710,10 @@
                 "uri",
                 "url"
             ],
-            "time": "2017-09-13 11:45:41"
+            "time": "2017-09-15 10:12:22"
         }
     ],
     "packages-dev": [
-        {
-            "name": "epoxa/phpunit-selenium",
-            "version": "3.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/epoxa/phpunit-selenium.git",
-                "reference": "343ba4e389ad97046c78fb2c7111e199795e7a80"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/epoxa/phpunit-selenium/zipball/343ba4e389ad97046c78fb2c7111e199795e7a80",
-                "reference": "343ba4e389ad97046c78fb2c7111e199795e7a80",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-dom": "*",
-                "php": ">=5.6",
-                "phpunit/phpunit": "~5.0",
-                "sebastian/comparator": "~1.0"
-            },
-            "require-dev": {
-                "phing/phing": "2.*"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "PHPUnit/"
-                ]
-            },
-            "include-path": [
-                ""
-            ],
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Giorgio Sironi",
-                    "email": "info@giorgiosironi.com",
-                    "role": "developer"
-                },
-                {
-                    "name": "Ivan Kurnosov",
-                    "email": "zerkms@zerkms.com",
-                    "role": "developer"
-                },
-                {
-                    "name": "Paul Briton",
-                    "role": "developer"
-                },
-                {
-                    "name": "Sebastian Bergmann",
-                    "email": "sb@sebastian-bergmann.de",
-                    "role": "original developer"
-                }
-            ],
-            "description": "Selenium Server integration for PHPUnit",
-            "homepage": "http://www.phpunit.de/",
-            "keywords": [
-                "phpunit",
-                "selenium",
-                "testing",
-                "xunit"
-            ],
-            "support": {
-                "issues": "https://github.com/sebastianbergmann/phpunit-selenium/issues",
-                "irc": "irc://irc.freenode.net/phpunit",
-                "source": "https://github.com/epoxa/phpunit-selenium/tree/3.0.3"
-            },
-            "time": "2017-01-23T22:12:35+00:00"
-        },
         {
             "name": "myclabs/deep-copy",
             "version": "1.x-dev",
@@ -1880,7 +1808,7 @@
                 "reflection",
                 "static analysis"
             ],
-            "time": "2017-09-11T18:02:19+00:00"
+            "time": "2017-09-11 18:02:19"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -2428,6 +2356,74 @@
             "time": "2017-06-30T09:13:00+00:00"
         },
         {
+            "name": "phpunit/phpunit-selenium",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/giorgiosironi/phpunit-selenium.git",
+                "reference": "343ba4e389ad97046c78fb2c7111e199795e7a80"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/giorgiosironi/phpunit-selenium/zipball/343ba4e389ad97046c78fb2c7111e199795e7a80",
+                "reference": "343ba4e389ad97046c78fb2c7111e199795e7a80",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-dom": "*",
+                "php": ">=5.6",
+                "phpunit/phpunit": "~5.0",
+                "sebastian/comparator": "~1.0"
+            },
+            "require-dev": {
+                "phing/phing": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "PHPUnit/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "include-path": [
+                ""
+            ],
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Giorgio Sironi",
+                    "email": "info@giorgiosironi.com",
+                    "role": "developer"
+                },
+                {
+                    "name": "Ivan Kurnosov",
+                    "email": "zerkms@zerkms.com",
+                    "role": "developer"
+                },
+                {
+                    "name": "Sebastian Bergmann",
+                    "email": "sb@sebastian-bergmann.de",
+                    "role": "original developer"
+                },
+                {
+                    "name": "Paul Briton",
+                    "role": "developer"
+                }
+            ],
+            "description": "Selenium Server integration for PHPUnit",
+            "homepage": "http://www.phpunit.de/",
+            "keywords": [
+                "phpunit",
+                "selenium",
+                "testing",
+                "xunit"
+            ],
+            "time": "2017-01-23T22:12:35+00:00"
+        },
+        {
             "name": "sebastian/code-unit-reverse-lookup",
             "version": "dev-master",
             "source": {
@@ -2946,12 +2942,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "c076a2d6f809130a84f99616b425b9665b3ce0a5"
+                "reference": "870c99622a14a57811816dc06843bcb60dd4f4c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/c076a2d6f809130a84f99616b425b9665b3ce0a5",
-                "reference": "c076a2d6f809130a84f99616b425b9665b3ce0a5",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/870c99622a14a57811816dc06843bcb60dd4f4c3",
+                "reference": "870c99622a14a57811816dc06843bcb60dd4f4c3",
                 "shasum": ""
             },
             "require": {
@@ -2996,7 +2992,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2017-09-04T13:18:59+00:00"
+            "time": "2017-09-15T10:12:22+00:00"
         },
         {
             "name": "webmozart/assert",

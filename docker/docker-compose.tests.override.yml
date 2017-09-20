@@ -27,6 +27,42 @@ services:
       - "9000"
     volumes:
       - ./app/client:/var/www/html
+  foreign:
+    image: nginx
+    links:
+      - foreign_php
+    expose:
+      - "80"
+      - "443"
+    volumes:
+      - ./etc/nginx/conf.d/foreign:/etc/nginx/conf.d
+      - ./etc/cert:/etc/cert
+      - ./app/foreign:/var/www/html
+  foreign_php:
+    image: php:fpm
+    expose:
+      - "9000"
+    volumes:
+      - ./app/foreign:/var/www/html
+  overlay:
+    image: nginx
+    links:
+      - overlay_php
+    expose:
+      - "80"
+      - "443"
+    volumes:
+      - ./etc/nginx/conf.d/overlay:/etc/nginx/conf.d
+      - ./etc/cert:/etc/cert
+      - ./app/overlay:/var/www/html
+  overlay_php:
+    image: php:fpm
+    links:
+      - web
+    expose:
+      - "9000"
+    volumes:
+      - ./app/overlay:/var/www/html
   hub:
     image: selenium/hub
     environment:

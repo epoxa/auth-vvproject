@@ -29,6 +29,7 @@ if ($existing) {
 } else {
 
     $data['_YYID'] = $data['INCARNATION'];
+    $data['nameConfirmed']  = true;
     $user = new YY($data);
     $user->_REF;
     $user['VIEWS'] = [];

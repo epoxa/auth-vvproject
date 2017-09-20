@@ -2,7 +2,7 @@
 
 use YY\System\YY;
 
-// TODO: Maybe it's make sense to build dynamic script (depending on browser type or geolocation for example)
+// TODO: Maybe it's make sense to build dynamic script (depending on browser type or geo-location for example)
 
 ob_start()
 ?>

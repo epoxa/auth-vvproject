@@ -1,33 +1,12 @@
 <?php
 
-use YY\Develop\BrowserTestCase;
+use YY\Develop\Tests\AuthTestCase;
 
 require_once __DIR__ . '/../config/env.php';
 require_once __DIR__ . '/../config/config.php';
 
-class TestAuthentication extends BrowserTestCase
+class TestAuthentication extends AuthTestCase
 {
-
-    private $bookmarkletScript;
-
-    protected function setUp()
-    {
-        $this->setBrowser(getenv('YY_TEST_BROWSER')); //  firefox
-        $this->setBrowserUrl(getenv('YY_TEST_BASE_URL')); // http://yy.local/
-        $this->setHost(getenv('YY_TEST_SELENIUM_HOST')); // 127.0.0.1
-        $this->setPort((int)getenv('YY_TEST_SELENIUM_PORT')); // 4444
-        $this->setDesiredCapabilities([
-            'acceptSslCerts' => true,
-            'acceptInsecureCerts' => true,
-        ]);
-        $this->setArtifactFolder(LOG_DIR);
-        parent::setUp();
-    }
-
-    public function setUpPage()
-    {
-        $this->timeouts()->implicitWait(5000);
-    }
 
     public function test_install()
     {
@@ -88,7 +67,7 @@ class TestAuthentication extends BrowserTestCase
 // Emulate press bookmarklet
         $script = preg_replace('/^javascript:/','',$script);
         $script = urldecode($script);
-//        $this->assertEquals('!', $script);
+        //$this->assertEquals('!', $script);
         $this->exec($script);
         $result = $this->byCssSelector("h1")->text();
         $this->assertEquals("Установка завершена", $result);
@@ -105,6 +84,14 @@ class TestAuthentication extends BrowserTestCase
         $this->quickReg();
         $result = $this->byCssSelector("span.label.label-info")->text();
         $this->assertEquals("Newbie", $result);
+        $this->byLinkText("reinstall")->click();
+        $this->assertTextNotPresent("Now you can generate another name");
+        $this->restartWorld();
+        $this->url("/");
+        $this->pressBookmarklet();
+        $this->byLinkText("Done")->click();
+        $this->byLinkText("reinstall")->click();
+        $this->assertTextNotPresent("Now you can generate another name");
     }
 
     public function test_public_client()
@@ -115,7 +102,6 @@ class TestAuthentication extends BrowserTestCase
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
         $user = $this->quickReg();
-        sleep(1);
         $this->assertTextPresent("Hello, $user[name]!");
         $this->assertEquals("http://client/index.php", $this->url());
     }
@@ -135,46 +121,9 @@ class TestAuthentication extends BrowserTestCase
         $this->url("http://client");
         $this->assertTextPresent('You are not logged in');
 
-//        $this->assertEquals('!', $this->bookmarkletScript);
-
-//        $this->installConsoleHook();
-//        try {
-//            $this->exec($this->bookmarkletScript);
-//        } catch (Exception $e) {
-//        }
-//        $log = $this->getConsoleMessages();
-//        $this->assertEquals('!', print_r($log, true));
-
-//        $result = $this->title();
-//        $this->assertEquals('Authentication', $result);
-
-        $this->exec($this->bookmarkletScript);
+        $this->pressBookmarklet();
         $this->assertTextPresent("Hello, $user[name]!");
         $this->assertEquals("http://client/index.php", $this->url());
-    }
-
-    protected function quickReg()
-    {
-        $this->byLinkText("English")->click();
-        $this->byCssSelector("a.btn-primary i.fa-plus")->click();
-        $this->byCssSelector("a.btn-default")->click();
-        $this->byCssSelector("a.btn-default")->click();
-        $script = $this->byCssSelector("a.bm-template")->attribute("href");
-        $script = preg_replace('/^javascript:/','',$script);
-        $script = urldecode($script);
-        $this->bookmarkletScript = $script;
-        $this->exec($script);
-        $result = $this->title();
-        $this->assertEquals('Authentication', $result);
-        $greeting = $this->byXPath('//p')->text();
-        $greeting = explode(' ', $greeting);
-        $this->assertEquals('Hello', $greeting[0]);
-        $name = $greeting[1];
-//        $this->byCssSelector("a.btn-primary")->click(); // TODO: Does not work! WTF?
-        $this->byLinkText("Done")->click();
-        return [
-            'name' => $name,
-        ];
     }
 
 }
