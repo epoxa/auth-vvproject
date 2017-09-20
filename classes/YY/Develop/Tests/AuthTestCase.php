@@ -38,6 +38,7 @@ class AuthTestCase extends BrowserTestCase
 
     protected function quickReg()
     {
+        $this->assertEquals('Authentication', $this->title());
         $this->byLinkText("English")->click();
         $this->byCssSelector("a.btn-primary i.fa-plus")->click();
         $this->byCssSelector("a.btn-default")->click();

@@ -115,7 +115,10 @@ if ($viewId === 'boot') {
 
             } else {
 
-                echo "alert('Hey, here is another page');";
+                $full_overlay_url = 'https://web.vvproject.com?' . http_build_query($_GET) ;
+                ob_start();
+                YY::DrawEngine('template-page-margin.php', ['overlay_url' => $full_overlay_url]);
+                echo ob_get_clean();
 
             }
 
@@ -200,7 +203,7 @@ if ($viewId === 'boot') {
 } else if ($viewId === 'proxy') {
 
     ob_start();
-    YY::DrawEngine('template-page-margin.php', ['protocol' => '']);
+    YY::DrawEngine('template-page-margin.php', ['overlay_url' => ROOT_URL . '?']);
     $script = ob_get_clean();
     YY::DrawEngine('template-boot-proxy.php', [
         'script' => $script,

@@ -5,5 +5,6 @@ $_SERVER['ENV'] = [
     'YY_AUTH_MYSQL_USER' => 'yy',
     'YY_AUTH_MYSQL_PASSWORD' => 'docker',
     'YY_TRUSTED_IPS' => ['127.0.0.1'],
+    'YY_OVERLAY_URL' => 'https://overlay',
 ];
 

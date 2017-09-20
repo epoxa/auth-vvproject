@@ -10,16 +10,6 @@ header('Content-type: text/javascript; charset=utf-8');
     (function () {
 
         console.log("vvproject is booting");
-        if (!window.vv_boot) {
-            console.log("vv_boot not found");
-            return;
-        }
-        for (var i = 0; i < window.vv_boot.length; i++) {
-            var n = window.vv_boot[i];
-            n.src = '';
-            n.parentNode.removeChild(n);
-        }
-        delete(window.vv_boot);
 
         var vv;
         var subj;
@@ -38,7 +28,7 @@ header('Content-type: text/javascript; charset=utf-8');
 
         if (!document.getElementsByTagName('body').length) {
             console.log("Body not found. vvproject will be loaded in separate window");
-            var href = 'http://<?= ROOT_URL ?>?where='.concat(encodeURIComponent(location.href), '&title=', encodeURIComponent(document.title));
+            var href = '<?= $params['overlay_url'] ?>&where='.concat(encodeURIComponent(location.href), '&title=', encodeURIComponent(document.title));
             vv = window.open(href, '_vvsidewindow');
             if (!vv) location.href = href;
             return;
@@ -72,14 +62,14 @@ header('Content-type: text/javascript; charset=utf-8');
         vvf.id = 'vvframe';
         vvf.name = 'vvframe';
         vvf.src = '';
-        vvf.src = location.protocol + '//<?= ROOT_URL ?>?where='.concat(encodeURIComponent(location.href), '&title=', encodeURIComponent(document.title));
+        vvf.src = '<?= $params['overlay_url'] ?>&where='.concat(encodeURIComponent(location.href), '&title=', encodeURIComponent(document.title));
         vv.appendChild(vvf);
         console.log("vvproject iframe set up");
         vv.vvf = vvf;
         vvf.focus(); // TODO: Похоже, из-за этого в ИЕ боди при первом открытии подсвечивается
 
         var vvt = document.getElementById('vvtheme');
-        var src = location.protocol + '//<?= ROOT_URL ?>themes/marginalia/css/marginalia.css';
+        var src = location.protocol + '//<?= ROOT_URL ?>/css/marginalia.css';
         if (!vvt || vvt.href != src) {
             if (vvt) vvt.parentNode.removeChild(vvt);
             vvt = document.createElement('link');
