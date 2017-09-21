@@ -82,40 +82,27 @@ if ($viewId === 'boot') {
 
                 assert(!$isWindowed);
 
-                $code = YY::GenerateNewYYID();
-
-                $url = parse_url($host['REDIRECT_URI']);
-                $url = ((isset($url["scheme"])) ? $url["scheme"] . "://" : "https://")
-//                    . ((isset($url["user"])) ? $url["user"]
-//                        . ((isset($url["pass"])) ? ":" . $url["pass"] : "") . "@" : "")
-                    . ((isset($url["host"])) ? $url["host"] : "auth.vvproject.com")
-                    . ((isset($url["port"])) ? ":" . $url["port"] : "")
-                    . (isset($url['path']) ? $url['path'] : '')
-                    . '?' . (isset($url['query']) ? $url['query'] . '&' : '') . "code=$code&state=public";
-
-                $user_info = [
-                    'public_key' => YY::$ME['PUBLIC_KEY'],
-                    'name' => YY::$ME['NAME'],
-                    'language' => isset(YY::$ME['LANGUAGE']) ? YY::$ME['LANGUAGE'] : null,
-                    'age' => floor((time() - YY::$ME['CAME_DATE']) / (24 * 3600)),
-                    'active_days' => YY::$ME['ACTIVE_DAYS'],
+                $redirect_uri = YY::Config('tokens')->createOAuth([
+                    'user' => YY::$ME,
+                    'state' => 'public',
                     'redirect_uri' => $host['REDIRECT_URI'],
-                    'debug' => $url,
-                ];
+                ]);
 
+                if ($redirect_uri) {
 
-                if (!file_exists(TOKENS_DIR)) {
-                    mkdir(TOKENS_DIR, 0777, true);
+                    $redirect_uri = json_encode($redirect_uri);
+                    echo "location.replace($redirect_uri)";
+
+                } else {
+
+                    $errorMessage = YY::Translate('Something went wrong sorry');
+                    $errorMessage = json_encode($errorMessage);
+                    echo "alert($errorMessage)";
                 }
-                $fileName = TOKENS_DIR . $code;
-                file_put_contents($fileName, json_encode($user_info));
-
-                $url = json_encode($url);
-                echo "location.replace($url)";
 
             } else {
 
-                $full_overlay_url = 'https://web.vvproject.com?' . http_build_query($_GET) ;
+                $full_overlay_url = $_SERVER['ENV']['YY_OVERLAY_URL'] . '?' . http_build_query($_GET) ;
                 ob_start();
                 YY::DrawEngine('template-page-margin.php', ['overlay_url' => $full_overlay_url]);
                 echo ob_get_clean();

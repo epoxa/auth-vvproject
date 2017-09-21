@@ -31,36 +31,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && $_SERVER['REQUEST_URI'] === '/toke
 
     } else {
 
-        $fileName = TOKENS_DIR . $_POST['code'];
-        if (!file_exists($fileName)) {
+        $data = YY::Config('tokens')->utilize(['token' => $_POST['code']]);
+
+        if (!$data) {
 
             $answer['error'] = 'invalid_grant';
             $answer['error_description'] = 'Authorization code is invalid or already used';
             $httpCode = 400;
 
+        } else if ($data['redirect_uri'] !== $_POST['redirect_uri']) {
+
+            $answer['error'] = 'invalid_grant';
+            $answer['error_description'] = 'Wrong redirect_uri parameter provided: ' . $_POST['redirect_uri'];
+            $httpCode = 400;
+
         } else {
 
-            $data = json_decode(file_get_contents($fileName), true);
-//            unlink($fileName); // TODO
-
-            if ($data['redirect_uri'] !== $_POST['redirect_uri']) {
-
-                $answer['error'] = 'invalid_grant';
-                $answer['error_description'] = 'Wrong redirect_uri parameter provided: ' . $_POST['redirect_uri'];
-                $httpCode = 400;
-
-            } else {
-
-                $answer['access_token'] = 'public';
-                $answer['token_type'] = 'public';
-                $answer['scope'] = 'public';
-                $answer['public_key'] = $data['public_key'];
-                $answer['name'] = $data['name'];
-                $answer['language'] = $data['language'];
-                $answer['age'] = $data['age'];
-                $answer['active_days'] = $data['active_days'];
-
-            }
+            $answer['access_token'] = 'public';
+            $answer['token_type'] = 'public';
+            $answer['scope'] = 'public';
+            $answer['public_key'] = $data['public_key'];
+            $answer['name'] = $data['name'];
+            $answer['language'] = $data['language'];
+            $answer['age'] = $data['age'];
+            $answer['active_days'] = $data['active_days'];
 
         }
 

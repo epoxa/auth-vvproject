@@ -26,40 +26,23 @@ class Aim extends Data
         // TODO: Ensure user installed bookmarklet
         // TODO: Check user's preference if to ask user every time when new application trying to identify visitor
 
-        $code = YY::GenerateNewYYID();
-
-        $parse_url = parse_url($this['redirect_uri']);
-        $parse_url["query"] = (isset($parse_url["query"]) ? $parse_url["query"] . '&' : '') . "code=$code&state=" . $this['state'];
-
-        $redirect_uri =
-            ((isset($parse_url["scheme"])) ? $parse_url["scheme"] . "://" : "")
-            . ((isset($parse_url["user"])) ? $parse_url["user"]
-                . ((isset($parse_url["pass"])) ? ":" . $parse_url["pass"] : "") . "@" : "")
-            . ((isset($parse_url["host"])) ? $parse_url["host"] : "")
-            . ((isset($parse_url["port"])) ? ":" . $parse_url["port"] : "")
-            . ((isset($parse_url["path"])) ? $parse_url["path"] : "")
-            . ("?" . $parse_url["query"])
-            . ((isset($parse_url["fragment"])) ? "#" . $parse_url["fragment"] : "")
-            ;
-        $redirect_uri = json_encode($redirect_uri);
-
-        $user_info = [
-            'public_key' => YY::$ME['PUBLIC_KEY'],
-            'name' => YY::$ME['NAME'],
-            'language' => isset(YY::$ME['LANGUAGE']) ? YY::$ME['LANGUAGE'] : null,
-            'age' => floor((time() - YY::$ME['CAME_DATE']) / (24 * 3600)),
-            'active_days' => YY::$ME['ACTIVE_DAYS'],
+        $redirect_uri = YY::Config('tokens')->createOAuth([
+            'user' => YY::$ME,
+            'state' => $this['state'],
             'redirect_uri' => $this['redirect_uri'],
-        ];
+        ]);
 
+        if ($redirect_uri) {
 
-        if (!file_exists(TOKENS_DIR)) {
-            mkdir(TOKENS_DIR, 0777, true);
+            $redirect_uri = json_encode($redirect_uri);
+            YY::clientExecute("location.replace($redirect_uri)");
+
+        } else {
+
+            $errorMessage = YY::Translate('Something went wrong sorry');
+            $errorMessage = json_encode($errorMessage);
+            YY::clientExecute("alert($errorMessage)");
         }
-        $fileName = TOKENS_DIR . $code;
-        file_put_contents($fileName, json_encode($user_info));
-
-        YY::clientExecute("location.replace($redirect_uri)");
     }
 
 }
