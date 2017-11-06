@@ -46,9 +46,9 @@ class TestAuthentication extends AuthTestCase
         $this->assertNotEquals($supposedUserName, $userName, 'Supposed user name is not changed after regeneration');
 // click | link=Done |
         $this->byLinkText("Done")->click();
-// assertText | //div[@id='_YY_2']/div/div[3]/span[2]/span[2] | Your personal access button:
+// assertText | //div[@id='_YY_2']/div/div[3]/span[2]/span[2] | Your personal access button: (eng translation)
         $result = $this->byXPath("//div[@id='_YY_2']/div/div[3]/span[2]/span[2]")->text();
-        $this->assertEquals("Your personal access button:", $result);
+        $this->assertEquals("Your personal access button is ready:", $result);
 // assertText | //button[@type='button'] | English
         $result = $this->byXPath("//button[@type='button']")->text();
         $this->assertEquals("English", $result);
@@ -58,7 +58,7 @@ class TestAuthentication extends AuthTestCase
         $this->byLinkText("Русский")->click();
 // assertText | //div[@id='_YY_2']/div/div[3]/span[2]/span[2] | Ваша персональная кнопка доступа:
         $result = $this->byXPath("//div[@id='_YY_2']/div/div[3]/span[2]/span[2]")->text();
-        $this->assertEquals("Ваша персональная кнопка доступа:", $result);
+        $this->assertEquals("Ваша персональная кнопка доступа готова:", $result);
 // storeText | css=a.bm-template | bookmarkletText
         $bookmarkletText = $this->byCssSelector("a.bm-template")->text();
         $this->assertEquals($userName, $bookmarkletText);

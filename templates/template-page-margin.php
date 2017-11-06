@@ -62,7 +62,7 @@ header('Content-type: text/javascript; charset=utf-8');
         vvf.id = 'vvframe';
         vvf.name = 'vvframe';
         vvf.src = '';
-        vvf.src = '<?= $params['overlay_url'] ?>&where='.concat(encodeURIComponent(location.href), '&title=', encodeURIComponent(document.title));
+        vvf.src = '<?= $params['overlay_url'] ?>';
         vv.appendChild(vvf);
         console.log("vvproject iframe set up");
         vv.vvf = vvf;

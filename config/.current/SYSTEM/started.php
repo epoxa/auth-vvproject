@@ -6,24 +6,26 @@
 
 use YY\System\YY;
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST'  && $_SERVER['REQUEST_URI'] === '/token') {
+//YY::Log('REQUEST_URI: ' . $_SERVER['REQUEST_URI']);
 
-    // Does not use $ME nor even YY:: at all, no database connection either.
+if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'GET'])  && substr($_SERVER['REQUEST_URI'],0,6) === '/token') {
+
+    // Does not use $ME nor database connection either.
 
     $answer = [];
     $httpCode = null;
 
-    if (isset($_POST['state'])) {
-        $answer['state'] = $_POST['state'];
+    if (isset($_REQUEST['state'])) {
+        $answer['state'] = $_REQUEST['state'];
     }
 
-    if (!isset($_POST['code']) || !isset($_POST['redirect_uri'])) {
+    if (!isset($_REQUEST['code']) || !isset($_REQUEST['redirect_uri'])) {
 
         $answer['error'] = 'parameter_absent';
         $answer['error_description'] = 'Provide both code and redirect_uri parameters please';
         $httpCode = 400;
 
-    } else if (!preg_match('/^[a-f0-9]{32}$/', $_POST['code'])) {
+    } else if (!preg_match('/^[a-f0-9]{32}$/', $_REQUEST['code'])) {
 
         $answer['error'] = 'invalid_request';
         $answer['error_description'] = 'Wrong formatted authorization code';
@@ -31,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && $_SERVER['REQUEST_URI'] === '/toke
 
     } else {
 
-        $data = YY::Config('tokens')->utilize(['token' => $_POST['code']]);
+        $data = YY::Config('tokens')->utilize(['token' => $_REQUEST['code']]);
 
         if (!$data) {
 
@@ -39,10 +41,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'  && $_SERVER['REQUEST_URI'] === '/toke
             $answer['error_description'] = 'Authorization code is invalid or already used';
             $httpCode = 400;
 
-        } else if ($data['redirect_uri'] !== $_POST['redirect_uri']) {
+        } else if ($data['redirect_uri'] !== $_REQUEST['redirect_uri']) {
 
             $answer['error'] = 'invalid_grant';
-            $answer['error_description'] = 'Wrong redirect_uri parameter provided: ' . $_POST['redirect_uri'];
+            $answer['error_description'] = 'Wrong redirect_uri parameter provided: ' . $_REQUEST['redirect_uri'];
             $httpCode = 400;
 
         } else {

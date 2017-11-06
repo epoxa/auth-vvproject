@@ -27,6 +27,7 @@ class AuthTestCase extends BrowserTestCase
             'acceptSslCerts' => true,
             'acceptInsecureCerts' => true,
         ]);
+//        $this->shareSession(false);
         $this->setArtifactFolder(LOG_DIR);
         parent::setUp();
     }

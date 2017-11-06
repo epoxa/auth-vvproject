@@ -30,12 +30,15 @@ class Aim extends Data
             'user' => YY::$ME,
             'state' => $this['state'],
             'redirect_uri' => $this['redirect_uri'],
+            'where' => $this['where'],
+            'title' => $this['title'],
         ]);
 
         if ($redirect_uri) {
 
             $redirect_uri = json_encode($redirect_uri);
             YY::clientExecute("location.replace($redirect_uri)");
+//            YY::redirectUrl($redirect_uri);
 
         } else {
 

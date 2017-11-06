@@ -1,8 +1,6 @@
 <?php
 
-use YY\Auth\Aim;
 use YY\Auth\Main;
-use YY\Core\Cache;
 use YY\System\Utils;
 use YY\System\YY;
 
@@ -34,6 +32,7 @@ if ($viewId === 'boot') {
         || !preg_match('/^[0-9a-f]{32}$/', $_GET['guest'])
     ) {
         // Wrong boot request
+        // TODO: Handle old bookmarklet version
         http_response_code(400);
         exit;
     };
@@ -85,6 +84,8 @@ if ($viewId === 'boot') {
                 $redirect_uri = YY::Config('tokens')->createOAuth([
                     'user' => YY::$ME,
                     'state' => 'public',
+                    'where' => $_GET['where'],
+                    'title' => $_GET['title'],
                     'redirect_uri' => $host['REDIRECT_URI'],
                 ]);
 
@@ -96,13 +97,21 @@ if ($viewId === 'boot') {
                 } else {
 
                     $errorMessage = YY::Translate('Something went wrong sorry');
-                    $errorMessage = json_encode($errorMessage);
+                    $errorMessage = json_encode($errorMessagtee);
                     echo "alert($errorMessage)";
                 }
 
             } else {
 
-                $full_overlay_url = $_SERVER['ENV']['YY_OVERLAY_URL'] . '?' . http_build_query($_GET) ;
+                $full_overlay_url = YY::Config('tokens')->createOAuth([
+                    'user' => YY::$ME,
+                    'state' => 'public',
+                    'where' => $_GET['where'],
+                    'title' => $_GET['title'],
+                    'redirect_uri' => $_SERVER['ENV']['YY_OVERLAY_URL'],
+//                    'mode' // TODO
+                ]);
+
                 ob_start();
                 YY::DrawEngine('template-page-margin.php', ['overlay_url' => $full_overlay_url]);
                 echo ob_get_clean();

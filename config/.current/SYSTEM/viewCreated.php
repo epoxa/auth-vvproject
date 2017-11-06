@@ -62,6 +62,8 @@ if (isset(YY::$CURRENT_VIEW['request']['build'])) {
             'type' => 'oauth',
             'client_id' => $client_id,
             'scope' => $scope,
+            'where' => null,
+            'title' => null,
             'redirect_uri' => YY::$CURRENT_VIEW['request']['redirect_uri'],
             'state' => YY::$CURRENT_VIEW['request']['state'],
         ]);

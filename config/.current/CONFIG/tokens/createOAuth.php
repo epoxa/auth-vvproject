@@ -7,6 +7,8 @@ use YY\System\YY;
 $bare_redirect_uri = $_params['redirect_uri'];
 $state = isset($_params['state']) ? $_params['state'] : 'public';
 $user = $_params['user'];
+$where = $_params['where'];
+$title = $_params['title'];
 
 $code = YY::GenerateNewYYID();
 
@@ -25,11 +27,14 @@ $full_redirect_uri =
 ;
 
 $user_info = [
+    'iat' => time(),
     'public_key' => $user['PUBLIC_KEY'],
     'name' => $user['NAME'],
     'language' => isset($user['LANGUAGE']) ? $user['LANGUAGE'] : null,
     'age' => floor((time() - $user['CAME_DATE']) / (24 * 3600)),
     'active_days' => $user['ACTIVE_DAYS'],
+    'where' => $where,
+    'title' => $title,
     'redirect_uri' => $bare_redirect_uri,
 ];
 
