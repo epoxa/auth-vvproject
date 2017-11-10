@@ -126,5 +126,11 @@ class TestAuthentication extends AuthTestCase
         $this->assertEquals("http://client/index.php", $this->url());
     }
 
+//    function test_relogin_from_bookmarklet()
+//    {
+//        // TODO: Не работает релогин под другим именем без выхода, попробовать воспроизвести
+//        $this->assertTrue(false);
+//    }
+
 }
 
