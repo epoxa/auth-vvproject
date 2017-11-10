@@ -12,9 +12,10 @@ env:
     - YY_TEST_SELENIUM_HOST=hub YY_TEST_BROWSER=firefox
 script:
 - ./tests/run-all-in-docker.sh
+after_script:
+- docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs web
 after_failure:
 - docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml ps
-- docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs web
 - docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs php
 after_success:
 - cd runtime/log && bash <(curl -s https://codecov.io/bash)
