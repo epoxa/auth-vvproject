@@ -10,6 +10,6 @@ apt-get update && apt-get install -y unzip
 
 docker-php-ext-install pcntl mysqli pdo pdo_mysql
 
-composer update --prefer-dist
+composer install --prefer-dist
 
 ./local/prepare-database.sh
