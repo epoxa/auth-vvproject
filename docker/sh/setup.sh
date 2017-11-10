@@ -13,6 +13,3 @@ docker-php-ext-install pcntl mysqli pdo pdo_mysql
 composer update --prefer-dist
 
 ./local/prepare-database.sh
-
-php-fpm --pid /var/run/php-fpm.pid
-

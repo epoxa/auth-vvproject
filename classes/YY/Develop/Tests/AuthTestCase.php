@@ -7,6 +7,8 @@ use YY\Develop\BrowserTestCase;
 class AuthTestCase extends BrowserTestCase
 {
 
+    protected $coverageScriptUrl = 'http://web/selenium/phpunit_coverage.php';
+
     private $bookmarkletScript;
 
     /**

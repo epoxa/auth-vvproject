@@ -2,5 +2,5 @@
 
 cd $(cd $(dirname $0) && pwd)/../../
 
-./vendor/bin/phpunit
+./vendor/bin/phpunit --coverage-clover /var/www/html/runtime/log/coverage.xml --whitelist /var/www/html
 #./vendor/bin/phpunit --filter test_infrastructure

@@ -16,5 +16,6 @@ after_failure:
 - docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml ps
 - docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs web
 - docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs php
-
+after_success:
+- cd runtime/logs && bash <(curl -s https://codecov.io/bash)
 
