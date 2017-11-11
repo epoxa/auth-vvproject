@@ -11,6 +11,10 @@ jobs:
           command: |
             ./tests/run-all-in-docker.sh
       - run:
+          name: Check coverage script
+          command: |
+            docker-compose -f ./docker/docker-compose.yml exec php php -r "echo file_get_contents('http://web/selenium/phpunit_coverage.php?PHPUNIT_SELENIUM_TEST_ID=TestOverlay__test_overlay') . PHP_EOL;"
+      - run:
           name: Debug log
           command: |
             docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
