@@ -9,6 +9,8 @@ jobs:
       - run:
           command: |
             ./tests/run-all-in-docker.sh
+      - store_artifacts:
+          path: ./runtime
       - deploy:
           command:
             cd runtime/log && bash <(curl -s https://codecov.io/bash) ; cd ../..
