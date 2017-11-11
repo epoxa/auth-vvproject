@@ -57,7 +57,9 @@ if (empty($_GET['code'])) {
             'code' => $_GET['code'],
             'redirect_uri' => $redirect_uri,
         ]);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Cookie: PHPUNIT_SELENIUM_TEST_ID=$_SESSION[PHPUNIT_SELENIUM_TEST_ID]"]);
+        if (isset($_SESSION['PHPUNIT_SELENIUM_TEST_ID'])) {
+            curl_setopt($curl, CURLOPT_HTTPHEADER, ["Cookie: PHPUNIT_SELENIUM_TEST_ID=$_SESSION[PHPUNIT_SELENIUM_TEST_ID]"]);
+        }
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         $result = $json = $error = null;
