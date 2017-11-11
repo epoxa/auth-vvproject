@@ -102,6 +102,7 @@ class TestAuthentication extends AuthTestCase
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
         $user = $this->quickReg();
+        sleep(1); // Trying to avoid weird error on travis-ci
         $this->assertTextPresent("Hello, $user[name]!");
         $this->assertEquals("http://client/index.php", $this->url());
     }
