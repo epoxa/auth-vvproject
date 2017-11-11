@@ -13,7 +13,8 @@ jobs:
       - run:
           name: Check coverage script
           command: |
-            docker-compose -f ./docker/docker-compose.yml exec php php ls -l /var/www/html/www/selenium
+            docker-compose -f docker/docker-compose.yml -f docker/docker-compose.tests.override.yml up -d --remove-orphans |
+            && docker-compose -f ./docker/docker-compose.yml exec php php ls -l /var/www/html/www/selenium
       - run:
           name: Debug log
           command: |
