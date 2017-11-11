@@ -9,3 +9,6 @@ jobs:
       - run:
           command: |
             ./tests/run-all-in-docker.sh
+      - coverage:
+          command:
+            cd runtime/log && bash <(curl -s https://codecov.io/bash) ; cd ../..
