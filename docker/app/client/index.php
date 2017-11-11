@@ -2,6 +2,10 @@
 
 session_start();
 
+if (isset($_GET['PHPUNIT_SELENIUM_TEST_ID'])) {
+    $_SESSION['PHPUNIT_SELENIUM_TEST_ID'] = $_GET['PHPUNIT_SELENIUM_TEST_ID'];
+}
+
 if (isset($_SESSION['userName'], $_SESSION['publicKey'])) {
 
     echo "<p>Hello, <span class='user-name'>$_SESSION[userName]</span>! Your public key is <span class='public-key'>$_SESSION[publicKey]</span></p>";
