@@ -9,9 +9,25 @@
          processIsolation="false"
          stopOnFailure="false"
          syntaxCheck="false">
+
     <testsuites>
         <testsuite name="Authentication test sute">
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
+
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <directory suffix=".php">./config/.current</directory>
+            <directory suffix=".php">./classes/YY/Auth</directory>
+            <directory suffix=".php">./classes/YY/Translation</directory>
+            <exclude>
+            </exclude>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-clover" target="./runtime/log/coverage.xml"/>
+    </logging>
+
 </phpunit>
