@@ -7,11 +7,13 @@ jobs:
     steps:
       - checkout
       - run:
-        command: |
-          ./tests/run-all-in-docker.sh
+          name: Run tests
+          command: |
+            ./tests/run-all-in-docker.sh
       - run:
-        command: |
-          docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
+          name: Debug log
+          command: |
+            docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
       - store_artifacts:
           path: ./runtime
       - deploy:
