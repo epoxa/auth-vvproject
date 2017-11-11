@@ -51,7 +51,8 @@ class TestOverlay extends AuthTestCase
 
     public function test_overlay()
     {
-        $this->setOverlayUrl('https://overlay');
+        // Parameters here to include token exchange in code coverage later
+        $this->setOverlayUrl("https://overlay?PHPUNIT_SELENIUM_TEST_ID=" . $this->getTestId());
         $this->url("/");
         $reg = $this->quickReg();
         $this->url("http://foreign");

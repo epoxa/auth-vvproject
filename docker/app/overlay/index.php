@@ -7,7 +7,7 @@ curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
 curl_setopt($curl, CURLOPT_POST, true);
 curl_setopt($curl, CURLOPT_POSTFIELDS, [
     'code' => $_GET['code'],
-    'redirect_uri' => 'https://overlay',
+    'redirect_uri' => "https://overlay?PHPUNIT_SELENIUM_TEST_ID=" . $this->getTestId(),
 ]);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 

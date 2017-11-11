@@ -96,6 +96,7 @@ class TestAuthentication extends AuthTestCase
 
     public function test_public_client()
     {
+        // Parameters here to include token exchange in code coverage later
         $this->url("http://client?PHPUNIT_SELENIUM_TEST_ID=" . $this->getTestId());
         $this->assertTextPresent('You are not logged in');
         $this->byLinkText("Log in")->click();
@@ -109,6 +110,7 @@ class TestAuthentication extends AuthTestCase
 
     public function test_registered_client()
     {
+        // This direct (not via HTTP API) intervention makes impossible testing on real site
         $db = new PDO(
             $_SERVER['ENV']['YY_AUTH_MYSQL_DATASOURCE'], $_SERVER['ENV']['YY_AUTH_MYSQL_USER'], $_SERVER['ENV']['YY_AUTH_MYSQL_PASSWORD']
         );
@@ -119,7 +121,8 @@ class TestAuthentication extends AuthTestCase
         $this->url("/");
         $user = $this->quickReg();
 
-        $this->url("http://client");
+        // Parameters here to include token exchange in code coverage later
+        $this->url("http://client?PHPUNIT_SELENIUM_TEST_ID=" . $this->getTestId());
         $this->assertTextPresent('You are not logged in');
 
         $this->pressBookmarklet();
