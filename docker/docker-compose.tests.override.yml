@@ -2,7 +2,7 @@ version: "2"
 services:
   web:
     volumes:
-      - ../vendor/phpunit/phpunit-selenium/PHPUnit/Extensions/SeleniumCommon:/var/www/html/www/selenium
+      - ./app/auth/selenium:/var/www/html/www/selenium
   php:
     environment:
       YY_TEST_BROWSER: "$YY_TEST_BROWSER"
@@ -12,7 +12,7 @@ services:
     links:
       - hub
     volumes:
-      - ../vendor/phpunit/phpunit-selenium/PHPUnit/Extensions/SeleniumCommon:/var/www/html/www/selenium
+      - ./app/auth/selenium:/var/www/html/www/selenium
     command: sh -c '/var/www/html/docker/sh/setup.sh && /var/www/html/docker/sh/setup-tests.sh && /var/www/html/docker/sh/run-php-fpm.sh'
   client:
     image: nginx
