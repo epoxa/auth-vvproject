@@ -10,7 +10,6 @@ jobs:
         command: |
           ./tests/run-all-in-docker.sh
       - run:
-        name: Debug log
         command: |
           docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
       - store_artifacts:
