@@ -4,6 +4,10 @@ const AUTH_VVPROJECT_HOST = 'https://web'; // This is container host name in doc
 
 session_start();
 
+if (isset($_GET['PHPUNIT_SELENIUM_TEST_ID'])) {
+    $_SESSION['PHPUNIT_SELENIUM_TEST_ID'] = $_GET['PHPUNIT_SELENIUM_TEST_ID'];
+}
+
 $redirect_uri =
     (isset($_SERVER['HTTPS']) ? 'https://' : 'http://') .
     $_SERVER['HTTP_HOST'] . '/login.php';
@@ -53,7 +57,7 @@ if (empty($_GET['code'])) {
             'code' => $_GET['code'],
             'redirect_uri' => $redirect_uri,
         ]);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Cookie: PHPUNIT_SELENIUM_TEST_ID=$_COOKIE[PHPUNIT_SELENIUM_TEST_ID]"]);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Cookie: PHPUNIT_SELENIUM_TEST_ID=$_SESSION[PHPUNIT_SELENIUM_TEST_ID]"]);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         $result = $json = $error = null;

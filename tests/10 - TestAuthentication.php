@@ -96,7 +96,7 @@ class TestAuthentication extends AuthTestCase
 
     public function test_public_client()
     {
-        $this->url("http://client");
+        $this->url("http://client?PHPUNIT_SELENIUM_TEST_ID=" . $this->getTestId());
         $this->assertTextPresent('You are not logged in');
         $this->byLinkText("Log in")->click();
         $result = $this->title();
