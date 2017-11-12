@@ -161,8 +161,14 @@ class TestAuthentication extends AuthTestCase
         $this->byLinkText("Done")->click();
         sleep(1);
         $warning = $this->alertText();
-        $this->assertEquals('Enter your secret key please.', $warning);
         $this->acceptAlert();
+        $this->assertEquals('Enter your secret key please.', $warning);
+//        $this->byCssSelector('input.monospace')->value('1234567');
+//        $this->byLinkText("Done")->click();
+//        sleep(1);
+//        $warning = $this->alertText();
+//        $this->acceptAlert();
+//        $this->assertEquals('This key is invalid. Sorry.', $warning);
         $this->byCssSelector('input.monospace')->value($data['access_key']);
         $this->byLinkText("Done")->click();
 
