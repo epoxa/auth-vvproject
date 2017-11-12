@@ -28,6 +28,7 @@ class AuthTestCase extends BrowserTestCase
         $this->setDesiredCapabilities([
             'acceptSslCerts' => true,
             'acceptInsecureCerts' => true,
+//            'unexpectedAlertBehaviour' => 'ignore',
         ]);
 //        $this->shareSession(false);
         $this->setArtifactFolder(LOG_DIR);
@@ -50,12 +51,14 @@ class AuthTestCase extends BrowserTestCase
         $script = preg_replace('/^javascript:/','',$script);
         $script = urldecode($script);
         $this->bookmarkletScript = $script;
-        $this->exec($script);
-        $key = $this->exec("return localStorage.key(0);");
-        $res = preg_match('/^auth-([0-9a-f]{32})$/', $key, $a);
-        $this->assertEquals(1, $res, 'Unknown local storage key: ' . $key);
-        $access_key = $this->exec("return localStorage.getItem('" . $key . "');");
+        $res = preg_match('/([0-9a-f]{32})/', $script, $a);
         $public_key = $a[1];
+        $this->exec($script);
+//        $key = $this->exec("return localStorage.key(0);");
+//        $res = preg_match('/^auth-([0-9a-f]{32})$/', $key, $a);
+//        $this->assertEquals(1, $res, 'Unknown local storage key: ' . $key);
+        $access_key = $this->exec("return localStorage.getItem('auth-" . $public_key . "');");
+//        $public_key = $a[1];
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
         $greeting = $this->byXPath('//p')->text();
@@ -74,6 +77,7 @@ class AuthTestCase extends BrowserTestCase
     protected function pressBookmarklet()
     {
         $this->exec($this->getBookmarkletScript());
+        usleep(300000);
     }
 
     protected function restartWorld()

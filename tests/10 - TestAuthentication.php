@@ -103,14 +103,18 @@ class TestAuthentication extends AuthTestCase
 
         // Success
         $this->url("/");
+        $this->waitForEngine();
         $this->pressBookmarklet();
+        $this->waitForEngine();
         $this->assertTextPresent('Bookmarklet installed');
         $this->assertTextPresent('Hello ' . $data['name']);
         $this->byLinkText("Done")->click();
 
         // Again success
         $this->url("/");
+        $this->waitForEngine();
         $this->pressBookmarklet();
+        $this->waitForEngine();
         $this->assertTextPresent('Bookmarklet installed');
         $this->assertTextPresent('Hello ' . $data['name']);
         $this->byLinkText("Done")->click();
@@ -132,7 +136,9 @@ class TestAuthentication extends AuthTestCase
 
         // Success
         $this->url("/");
+        $this->waitForEngine();
         $this->pressBookmarklet();
+        $this->waitForEngine();
         $this->assertTextPresent('Bookmarklet installed');
         $this->assertTextPresent('Hello ' . $data['name']);
         $this->byLinkText("Done")->click();
@@ -153,6 +159,7 @@ class TestAuthentication extends AuthTestCase
         $this->assertTextPresent('Recover');
         $this->assertTextPresent($data['name']);
         $this->byLinkText("Done")->click();
+        sleep(1);
         $warning = $this->alertText();
         $this->assertEquals('Enter your secret key please.', $warning);
         $this->acceptAlert();
@@ -161,31 +168,61 @@ class TestAuthentication extends AuthTestCase
 
         // Again success
         $this->url("/");
+        $this->waitForEngine();
         $this->pressBookmarklet();
         $this->assertTextPresent('Bookmarklet installed');
         $this->assertTextPresent('Hello ' . $data['name']);
         $this->byLinkText("Done")->click();
 
         // Show/hide private access key
-        $this->waitForEngine();
         $this->assertTextPresent($data['public_key']);
         $this->assertTextNotPresent($data['access_key']);
-        $this->byLinkText("display")->click();
-        sleep(1);
-//        $this->waitForEngine();
-//        $warning = $this->alertText();
-//        $this->assertContains('Keep your key', $warning);
+//        $this->byLinkText("display")->click(); // Does not work
+        $this->exec('$($("span.pull-right a").get(0)).click();');
+        parent::waitUntil(function() {return $this->alertIsPresent();}, 3000);
+        $warning = $this->alertText();
 //        $this->assertTextNotPresent($data['access_key']);
-//        $this->acceptAlert();
-//        $this->assertTextPresent($data['access_key']);
-//        $this->byLinkText("hide")->click();
-//        $this->assertTextNotPresent($data['access_key']);
-
+        $this->acceptAlert();
+        $this->assertContains('Keep your key', $warning);
+        $this->assertTextPresent($data['access_key']);
+//        $this->byLinkText("hide")->click();  // Does not work
+        $this->exec('$($("span.pull-right a").get(0)).click();');
+        $this->assertTextNotPresent($data['access_key']);
     }
 
     function test_relogin_from_bookmarklet()
     {
-//        $this->assertTrue(false);
+        $this->url("/");
+        $data1 = $this->quickReg();
+        $bookmarklet1 = $this->getBookmarkletScript();
+
+        $this->exec('document.cookie = "YY=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";');
+
+        $this->url("/");
+        $data2 = $this->quickReg();
+        $bookmarklet2 = $this->getBookmarkletScript();
+
+        $this->assertNotEquals($bookmarklet1, $bookmarklet2);
+        $this->assertNotEquals($data1['name'], $data2['name']);
+        $this->assertNotEquals($data1['public_key'], $data2['public_key']);
+        $this->assertNotEquals($data1['access_key'], $data2['access_key']);
+
+        $this->assertTextPresent($data2['name']);
+        $this->assertTextNotPresent($data1['name']);
+
+        $this->exec($bookmarklet1);
+        sleep(2);
+        $this->waitForEngine();
+
+        $this->assertTextPresent($data1['name']);
+        $this->assertTextNotPresent($data2['name']);
+
+        $this->exec($bookmarklet2);
+        sleep(2);
+        $this->waitForEngine();
+
+        $this->assertTextPresent($data2['name']);
+        $this->assertTextNotPresent($data1['name']);
     }
 
     public function test_public_client()
