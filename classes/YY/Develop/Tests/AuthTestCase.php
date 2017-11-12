@@ -51,6 +51,11 @@ class AuthTestCase extends BrowserTestCase
         $script = urldecode($script);
         $this->bookmarkletScript = $script;
         $this->exec($script);
+        $key = $this->exec("return localStorage.key(0);");
+        $res = preg_match('/^auth-([0-9a-f]{32})$/', $key, $a);
+        $this->assertEquals(1, $res, 'Unknown local storage key: ' . $key);
+        $access_key = $this->exec("return localStorage.getItem('" . $key . "');");
+        $public_key = $a[1];
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
         $greeting = $this->byXPath('//p')->text();
@@ -61,6 +66,8 @@ class AuthTestCase extends BrowserTestCase
         $this->byLinkText("Done")->click();
         return [
             'name' => $name,
+            'public_key' => $public_key,
+            'access_key' => $access_key,
         ];
     }
 

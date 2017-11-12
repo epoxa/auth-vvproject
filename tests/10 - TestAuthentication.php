@@ -81,7 +81,9 @@ class TestAuthentication extends AuthTestCase
     public function test_install2()
     {
         $this->url("/");
-        $this->quickReg();
+        $data = $this->quickReg();
+        $this->assertContains($data['public_key'], $this->getBookmarkletScript(), 'Bookmarklet script does not contain public key');
+        $this->assertNotContains($data['access_key'], $this->getBookmarkletScript(), 'Bookmarklet script contains access key');
         $result = $this->byCssSelector("span.label.label-info")->text();
         $this->assertEquals("Newbie", $result);
         $this->byLinkText("reinstall")->click();
@@ -92,6 +94,98 @@ class TestAuthentication extends AuthTestCase
         $this->byLinkText("Done")->click();
         $this->byLinkText("reinstall")->click();
         $this->assertTextNotPresent("Now you can generate another name");
+    }
+
+    public function test_recover()
+    {
+        $this->url("/");
+        $data = $this->quickReg();
+
+        // Success
+        $this->url("/");
+        $this->pressBookmarklet();
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        $this->byLinkText("Done")->click();
+
+        // Again success
+        $this->url("/");
+        $this->pressBookmarklet();
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        $this->byLinkText("Done")->click();
+
+        // Remove cookie
+        $this->exec('document.cookie = "YY=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT;";');
+
+        // Success
+        $this->url("/");
+        $this->waitForEngine();
+        $this->pressBookmarklet();
+        $this->waitForEngine();
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        $this->byLinkText("Done")->click();
+
+        // Remove access key
+        $this->exec('localStorage.removeItem("auth-' . $data['public_key'] . '")');
+
+        // Success
+        $this->url("/");
+        $this->pressBookmarklet();
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        $this->byLinkText("Done")->click();
+
+        // Remove cookie and access key
+        $this->exec('localStorage.removeItem("auth-' . $data['public_key'] . '")');
+        $this->exec('document.cookie = "YY=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";');
+
+        // Failure
+        $this->url("/");
+        $this->waitForEngine();
+        $this->pressBookmarklet();
+        $this->waitForEngine();
+        $this->assertTextNotPresent('Bookmarklet installed');
+        $this->assertTextNotPresent('Hello ' . $data['name']);
+
+        // Recover
+        $this->assertTextPresent('Recover');
+        $this->assertTextPresent($data['name']);
+        $this->byLinkText("Done")->click();
+        $warning = $this->alertText();
+        $this->assertEquals('Enter your secret key please.', $warning);
+        $this->acceptAlert();
+        $this->byCssSelector('input.monospace')->value($data['access_key']);
+        $this->byLinkText("Done")->click();
+
+        // Again success
+        $this->url("/");
+        $this->pressBookmarklet();
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        $this->byLinkText("Done")->click();
+
+        // Show/hide private access key
+        $this->waitForEngine();
+        $this->assertTextPresent($data['public_key']);
+        $this->assertTextNotPresent($data['access_key']);
+        $this->byLinkText("display")->click();
+        sleep(1);
+//        $this->waitForEngine();
+//        $warning = $this->alertText();
+//        $this->assertContains('Keep your key', $warning);
+//        $this->assertTextNotPresent($data['access_key']);
+//        $this->acceptAlert();
+//        $this->assertTextPresent($data['access_key']);
+//        $this->byLinkText("hide")->click();
+//        $this->assertTextNotPresent($data['access_key']);
+
+    }
+
+    function test_relogin_from_bookmarklet()
+    {
+//        $this->assertTrue(false);
     }
 
     public function test_public_client()
@@ -129,12 +223,6 @@ class TestAuthentication extends AuthTestCase
         $this->assertTextPresent("Hello, $user[name]!");
         $this->assertEquals("http://client/index.php", $this->url());
     }
-
-//    function test_relogin_from_bookmarklet()
-//    {
-//        // TODO: Не работает релогин под другим именем без выхода, попробовать воспроизвести
-//        $this->assertTrue(false);
-//    }
 
 }
 

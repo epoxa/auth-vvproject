@@ -8,5 +8,5 @@ $_SERVER['ENV'] = array (
   array (
     0 => '127.0.0.1',
   ),
-  'YY_OVERLAY_URL' => 'https://overlay',
+  'YY_OVERLAY_URL' => 'https://overlay?PHPUNIT_SELENIUM_TEST_ID=TestOverlay__test_overlay',
 );
