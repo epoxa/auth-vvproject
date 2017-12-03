@@ -15,7 +15,7 @@ services:
       - ./etc/cert:/etc/cert
       - ./..:/var/www/html
   php:
-    image: php:fpm
+    image: php:7.1.12-fpm-jessie
     links:
       - sql
     expose:
