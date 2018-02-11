@@ -25,7 +25,7 @@ class Aim extends Data
     public function __construct($init = null)
     {
         parent::__construct($init);
-        Log::Log('system', 'Aim created: ' . $init['redirect_uri']);
+        YY::Log('system', 'Aim created: ' . $init['redirect_uri']);
     }
 
 
@@ -44,14 +44,14 @@ class Aim extends Data
 
         if ($redirect_uri) {
 
-            Log::Log('system', 'JS client redirection to: ' . $this['redirect_uri']);
+            YY::Log('system', 'JS client redirection to: ' . $this['redirect_uri']);
             $redirect_uri = json_encode($redirect_uri);
             YY::clientExecute("location.replace($redirect_uri)");
 //            YY::redirectUrl($redirect_uri);
 
         } else {
 
-            Log::Log('system', 'Redirect impossible: ' . $this['redirect_uri']);
+            YY::Log('system', 'Redirect impossible: ' . $this['redirect_uri']);
             $errorMessage = YY::Translate('Something went wrong sorry');
             $errorMessage = json_encode($errorMessage);
             YY::clientExecute("alert($errorMessage)");

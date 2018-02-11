@@ -9,7 +9,7 @@ YY::Log('system', 'World will be restarted!');
 
 // Завершаем работу с объектной системой
 Cache::Flush(false);
-Log::finalize();
+//YY::Log()->finalize();
 Data::DetachStorage();
 
 // TODO: Как бы еще все запущенные потоки подождать/убить?
