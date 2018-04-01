@@ -18,7 +18,7 @@ ob_start()
                 eval('console.info(\'eval allowed\');');
             } catch (e) {
                 console.warn('eval not allowed');
-                var chld = window.open(u.concat('&mode=window'), '_blank', 'left=8000,top=0,height=8000,width=360,location=no,toolbar=no,directories=no,status=no,menubar=no');
+                var chld = window.open(u.concat('&mode=window'), <?= json_encode(OVERLAY_WINDOW_NAME) ?>, <?= json_encode(OVERLAY_WINDOW_PARAMS) ?>);
                 if (!chld) alert('Error open window');
                 return;
             }

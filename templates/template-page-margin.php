@@ -1,7 +1,9 @@
 <?php
 /**
+ * @var array $params
  */
 header('Content-type: text/javascript; charset=utf-8');
+$overlay_url = $params['overlay_url'];
 ?>
 <?php ob_start(); ?>
 <script>
@@ -27,9 +29,8 @@ header('Content-type: text/javascript; charset=utf-8');
         }
 
         if (!document.getElementsByTagName('body').length) {
-            console.log("Body not found. vvproject will be loaded in separate window");
-            var href = '<?= $params['overlay_url'] ?>&where='.concat(encodeURIComponent(location.href), '&title=', encodeURIComponent(document.title));
-            vv = window.open(href, '_vvsidewindow');
+            console.log("Document body not found. Overlay will be loaded in separate window");
+            vv = window.open(<?= json_encode($overlay_url) ?>, <?= json_encode(OVERLAY_WINDOW_NAME) ?>, <?= json_encode(OVERLAY_WINDOW_PARAMS) ?>);
             if (!vv) location.href = href;
             return;
         }
@@ -62,7 +63,7 @@ header('Content-type: text/javascript; charset=utf-8');
         vvf.id = 'vvframe';
         vvf.name = 'vvframe';
         vvf.src = '';
-        vvf.src = '<?= $params['overlay_url'] ?>';
+        vvf.src = <?= json_encode($params['overlay_url']) ?>;
         vv.appendChild(vvf);
         console.log("vvproject iframe set up");
         vv.vvf = vvf;

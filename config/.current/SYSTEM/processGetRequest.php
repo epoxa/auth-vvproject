@@ -21,23 +21,22 @@ if ($viewId === 'boot') {
     // Must return boot script text or html page depending on "mode" param
     // Incarnation may be absent at the point
 
-
     $needUpdateBookmarklet = !isset($_GET['version']) || $_GET['version'] != BOOT_VERSION;
-
-    // TODO: Handle wrong bookmarklet version
+    $isWindowed = isset($_GET['mode']) && $_GET['mode'] === 'window';
 
     if (
         !isset($_GET['mode'], $_GET['guest'], $_GET['where'], $_GET['title'])
-        || !in_array($_GET['mode'], ['inline', 'window'])
+        || !in_array($_GET['mode'], ['inline', '', 'window'])
         || !preg_match('/^[0-9a-f]{32}$/', $_GET['guest'])
+        || $_GET['version'] < BOOT_MIN_VERSION
     ) {
-        // Wrong boot request
-        // TODO: Handle old bookmarklet version
-        http_response_code(400);
+        if ($isWindowed) {
+            YY::DrawEngine('template-wrong-bookmarklet-window.php');
+        } else {
+            YY::DrawEngine('template-wrong-bookmarklet-script.php');
+        }
         exit;
     };
-
-    $isWindowed = $_GET['mode'] === 'window';
 
 
     $site = parse_url($_GET['where'], PHP_URL_HOST);
@@ -112,9 +111,11 @@ if ($viewId === 'boot') {
 //                    'mode' // TODO
                 ]);
 
-                ob_start();
-                YY::DrawEngine('template-page-margin.php', ['overlay_url' => $full_overlay_url]);
-                echo ob_get_clean();
+                if ($isWindowed) {
+                    YY::DrawEngine('template-windowed-margin.php', ['overlay_url' => $full_overlay_url]);
+                } else {
+                    YY::DrawEngine('template-page-margin.php', ['overlay_url' => $full_overlay_url]);
+                }
 
             }
 

@@ -45,4 +45,7 @@ define('YYID', 'YYID');
 
 // Totally custom
 
-const BOOT_VERSION = 5;
+const BOOT_VERSION = 6;
+const BOOT_MIN_VERSION = 5;
+const OVERLAY_WINDOW_NAME = '_vvsidewindow';
+const OVERLAY_WINDOW_PARAMS = 'left=8000,top=0,height=8000,width=360,location=no,toolbar=no,directories=no,status=no,menubar=no';
