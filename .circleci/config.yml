@@ -7,17 +7,13 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Update env.php
+          command: |
+            sed -e "s/'YY_TEST_BROWSER' => '.*'/'YY_TEST_BROWSER' => '${YY_TEST_BROWSER}'/" -i docker/app/config/env.php
+      - run:
           name: Run tests
           command: |
             ./tests/run-all-in-docker.sh
-#      - run:
-#          name: Setup containers
-#          command: |
-#            docker-compose -f docker/docker-compose.yml -f docker/docker-compose.tests.override.yml up -d --remove-orphans
-#      - run:
-#          name: Check coverage script
-#          command: |
-#            docker-compose -f ./docker/docker-compose.yml exec php php ls -l /var/www/html/www/selenium
       - run:
           name: Debug log
           command: |

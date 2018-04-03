@@ -38,12 +38,16 @@ class AuthTestCase extends BrowserTestCase
 
     public function setUpPage()
     {
-        $this->__call('timeouts', [
-            'pageLoad' => 5000,
-            'script'=> 5000,
-            'implicit' => 5000,
-        ]);
-//        $this->timeouts()->implicitWait(5000);
+        // TODO: That's crazy!
+        if ($this->getBrowser() == 'firefox') {
+            $this->timeouts()->implicitWait(5000);
+        } else { // Chrome
+            $this->__call('timeouts', [
+                'pageLoad' => 5000,
+                'script'=> 5000,
+                'implicit' => 5000,
+            ]);
+        }
     }
 
     protected function quickReg()
