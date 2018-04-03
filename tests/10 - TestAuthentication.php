@@ -120,7 +120,7 @@ class TestAuthentication extends AuthTestCase
         $this->byLinkText("Done")->click();
 
         // Remove cookie
-        $this->exec('document.cookie = "YY=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT;";');
+        $this->exec('document.cookie = "YY=deleted; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=.web";');
 
         // Success
         $this->url("/");
@@ -145,7 +145,7 @@ class TestAuthentication extends AuthTestCase
 
         // Remove cookie and access key
         $this->exec('localStorage.removeItem("auth-' . $data['public_key'] . '")');
-        $this->exec('document.cookie = "YY=; expires=Thu, 01 Jan 1970 00:00:01 GMT;";');
+        $this->killSession();
 
         // Failure
         $this->url("/");

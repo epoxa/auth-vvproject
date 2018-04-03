@@ -9,10 +9,6 @@
     {
       "type": "vcs",
       "url": "git@github.com:epoxa/yy.git"
-    },
-    {
-      "type": "vcs",
-      "url": "git@github.com:epoxa/phpunit-selenium.git"
     }
   ],
   "require": {

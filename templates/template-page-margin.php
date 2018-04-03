@@ -30,7 +30,7 @@ $overlay_url = $params['overlay_url'];
 
         if (!document.getElementsByTagName('body').length) {
             console.log("Document body not found. Overlay will be loaded in separate window");
-            vv = window.open(<?= json_encode($overlay_url) ?>, <?= json_encode(OVERLAY_WINDOW_NAME) ?>, <?= json_encode(OVERLAY_WINDOW_PARAMS) ?>);
+            vv = window.open(<?= json_encode($overlay_url) ?>, '<?= OVERLAY_WINDOW_NAME ?>', '<?= OVERLAY_WINDOW_PARAMS ?>');
             if (!vv) location.href = href;
             return;
         }

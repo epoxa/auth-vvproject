@@ -21,10 +21,11 @@ class AuthTestCase extends BrowserTestCase
 
     protected function setUp()
     {
-        $this->setBrowser(getenv('YY_TEST_BROWSER')); //  firefox
-        $this->setBrowserUrl(getenv('YY_TEST_BASE_URL')); // http://yy.local/
-        $this->setHost(getenv('YY_TEST_SELENIUM_HOST')); // 127.0.0.1
-        $this->setPort((int)getenv('YY_TEST_SELENIUM_PORT')); // 4444
+//        fwrite(STDERR, print_r($_SERVER['ENV'], true));
+        $this->setBrowser($_SERVER['ENV']['YY_TESTS']['YY_TEST_BROWSER']); //  firefox
+        $this->setBrowserUrl($_SERVER['ENV']['YY_TESTS']['YY_TEST_BASE_URL']); // http://yy.local/
+        $this->setHost($_SERVER['ENV']['YY_TESTS']['YY_TEST_SELENIUM_HOST']); // 127.0.0.1
+        $this->setPort($_SERVER['ENV']['YY_TESTS']['YY_TEST_SELENIUM_PORT']); // 4444
         $this->setDesiredCapabilities([
             'acceptSslCerts' => true,
             'acceptInsecureCerts' => true,
@@ -37,7 +38,12 @@ class AuthTestCase extends BrowserTestCase
 
     public function setUpPage()
     {
-        $this->timeouts()->implicitWait(5000);
+        $this->__call('timeouts', [
+            'pageLoad' => 5000,
+            'script'=> 5000,
+            'implicit' => 5000,
+        ]);
+//        $this->timeouts()->implicitWait(5000);
     }
 
     protected function quickReg()
@@ -89,6 +95,14 @@ class AuthTestCase extends BrowserTestCase
             }
         };
         closedir($d);
+    }
+
+    protected function killSession()
+    {
+        $url = $this->url();
+        $host = parse_url($url, PHP_URL_HOST);
+        $this->exec('document.cookie = "YY=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=' . $host . '"');
+        $this->exec('document.cookie = "YY=; expires=Thu, 01 Jan 1970 00:00:01 GMT; path=/; domain=.' . $host . '"');
     }
 
 }

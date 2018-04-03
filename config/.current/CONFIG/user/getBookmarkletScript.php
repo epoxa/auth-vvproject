@@ -18,7 +18,7 @@ ob_start()
                 eval('console.info(\'eval allowed\');');
             } catch (e) {
                 console.warn('eval not allowed');
-                var chld = window.open(u.concat('&mode=window'), <?= json_encode(OVERLAY_WINDOW_NAME) ?>, <?= json_encode(OVERLAY_WINDOW_PARAMS) ?>);
+                var chld = window.open(u.concat('&mode=window'), '<?= OVERLAY_WINDOW_NAME ?>', '<?= OVERLAY_WINDOW_PARAMS ?>');
                 if (!chld) alert('Error open window');
                 return;
             }
