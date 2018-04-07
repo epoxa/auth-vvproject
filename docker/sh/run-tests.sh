@@ -3,4 +3,4 @@
 cd $(cd $(dirname $0) && pwd)/../../
 
 ./vendor/bin/phpunit --verbose
-#./vendor/bin/phpunit --filter yandex
+#./vendor/bin/phpunit --filter install2

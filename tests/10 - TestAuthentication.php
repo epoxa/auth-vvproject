@@ -82,8 +82,11 @@ class TestAuthentication extends AuthTestCase
     {
         $this->url("/");
         $data = $this->quickReg();
-        $this->assertContains($data['public_key'], $this->getBookmarkletScript(), 'Bookmarklet script does not contain public key');
-        $this->assertNotContains($data['access_key'], $this->getBookmarkletScript(), 'Bookmarklet script contains access key');
+        $accessKeyTail = substr($data['access_key'], -16);
+        $bookmarkletScript = $this->getBookmarkletScript();
+        $this->assertContains($data['public_key'], $bookmarkletScript, 'Bookmarklet script does not contain public key');
+        $this->assertNotContains($data['access_key'], $bookmarkletScript, 'Bookmarklet script contains access key');
+        $this->assertNotContains($accessKeyTail, 'Bookmarklet script contains access key tail');
         $result = $this->byCssSelector("span.label.label-info")->text();
         $this->assertEquals("Newbie", $result);
         $this->byLinkText("reinstall")->click();
@@ -91,7 +94,7 @@ class TestAuthentication extends AuthTestCase
         $originalUrl = $this->exec('return location;');
         $key = 'auth-' . $data['public_key'];
         $val = $this->exec("return localStorage.getItem('$key')");
-        $this->assertEquals($data['access_key'], $val);
+        $this->assertEquals($accessKeyTail, $val);
         $this->restartWorld();
         $this->url("/");
         $this->pressBookmarklet();
@@ -99,7 +102,7 @@ class TestAuthentication extends AuthTestCase
         $currentUrl = $this->exec('return location;');
         $this->assertEquals($originalUrl, $currentUrl);
         $val = $this->exec("return localStorage.getItem('$key')");
-        $this->assertEquals($data['access_key'], $val);
+        $this->assertEquals($accessKeyTail, $val);
         $this->assertTextPresent("installed successfully");
         $this->byLinkText("Done")->click();
         $this->byLinkText("reinstall")->click();
@@ -249,7 +252,7 @@ class TestAuthentication extends AuthTestCase
         $this->byLinkText("Log in")->click();
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
-        $user = $this->quickReg();
+        $user = $this->quickReg(false);
         sleep(1); // Trying to avoid weird error on travis-ci
         $this->assertTextPresent("Hello, $user[name]!");
         $this->assertEquals("http://client/index.php", $this->url());

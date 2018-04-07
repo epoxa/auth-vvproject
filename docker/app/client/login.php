@@ -16,8 +16,6 @@ if (empty($_GET['code'])) {
 
     // Initiate external authentication
 
-    $_SESSION['state'] = uniqid();
-
     /*
      *  All these are not required:
      *
@@ -27,6 +25,8 @@ if (empty($_GET['code'])) {
      *  approval_prompt = auto
      *
      */
+    $_SESSION['state'] = uniqid(); // Not required but allowed
+
     $authorization_endpoint = AUTH_VVPROJECT_HOST . '/authorize/?state=' . $_SESSION['state'] . '&redirect_uri=' . urlencode($redirect_uri);
 
     header('Location: ' . $authorization_endpoint);

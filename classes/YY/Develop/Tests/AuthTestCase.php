@@ -2,6 +2,7 @@
 
 namespace YY\Develop\Tests;
 
+use SebastianBergmann\ObjectEnumerator\Exception;
 use YY\Develop\BrowserTestCase;
 
 class AuthTestCase extends BrowserTestCase
@@ -50,7 +51,7 @@ class AuthTestCase extends BrowserTestCase
         }
     }
 
-    protected function quickReg()
+    protected function quickReg($full = true)
     {
         $this->assertEquals('Authentication', $this->title());
         $this->byLinkText("English")->click();
@@ -62,13 +63,9 @@ class AuthTestCase extends BrowserTestCase
         $script = urldecode($script);
         $this->bookmarkletScript = $script;
         $res = preg_match('/([0-9a-f]{32})/', $script, $a);
+        $this->assertEquals(1, $res, 'Can not find public key in bookmarklet script');
         $public_key = $a[1];
         $this->exec($script);
-//        $key = $this->exec("return localStorage.key(0);");
-//        $res = preg_match('/^auth-([0-9a-f]{32})$/', $key, $a);
-//        $this->assertEquals(1, $res, 'Unknown local storage key: ' . $key);
-        $access_key = $this->exec("return localStorage.getItem('auth-" . $public_key . "');");
-//        $public_key = $a[1];
         $result = $this->title();
         $this->assertEquals('Authentication', $result);
         $greeting = $this->byXPath('//p')->text();
@@ -77,11 +74,23 @@ class AuthTestCase extends BrowserTestCase
         $name = $greeting[1];
 //        $this->byCssSelector("a.btn-primary")->click(); // TODO: Does not work! WTF?
         $this->byLinkText("Done")->click();
-        return [
-            'name' => $name,
-            'public_key' => $public_key,
-            'access_key' => $access_key,
-        ];
+        if ($full) {
+            $this->byLinkText("display")->click();
+            usleep(500000);
+            $this->acceptAlert();
+            $access_key = $this->byCssSelector('tr:nth-child(3) strong')->text();
+            $this->byLinkText("hide")->click();
+            return [
+                'name' => $name,
+                'public_key' => $public_key,
+                'access_key' => $access_key,
+            ];
+        } else {
+            return [
+                'name' => $name,
+                'public_key' => $public_key,
+            ];
+        }
     }
 
     protected function pressBookmarklet()

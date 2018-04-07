@@ -158,7 +158,9 @@ if ($viewId === 'boot') {
             $guest = YY::Config('user')->loadFromDatabase([
                 'PUBLIC_KEY' => $_SESSION['auth_guest'],
             ]);
-            $loginOk = $guest && $_GET['secret'] === md5($_SESSION['auth_challenge'] . $guest['CURRENT_KEY']);
+            $loginOk =
+                $guest && $_GET['secret'] === md5($_SESSION['auth_challenge'] . substr($guest['CURRENT_KEY'], -16))
+                && $_COOKIE['auth-' . $_SESSION['auth_guest']] === substr($guest['CURRENT_KEY'], 0, 16);
             $where = $_SESSION['auth_where'];
             if ($loginOk) {
                 YY::$ME = $guest;
