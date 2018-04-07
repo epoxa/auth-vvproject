@@ -57,6 +57,8 @@ if (in_array($_SERVER['REQUEST_METHOD'], ['POST', 'GET'])  && substr($_SERVER['R
             $answer['language'] = $data['language'];
             $answer['age'] = $data['age'];
             $answer['active_days'] = $data['active_days'];
+            $answer['page_url'] = $data['where'];
+            $answer['page_title'] = $data['title'];
 
         }
 

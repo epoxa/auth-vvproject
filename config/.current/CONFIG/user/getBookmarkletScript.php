@@ -14,19 +14,35 @@ ob_start()
         <?php /* START SCRIPT */ ?>
         (function () {
             var u = 'https://<?= $_SERVER['HTTP_HOST'] ?>/?view=boot&version=<?= BOOT_VERSION ?>&guest=<?= YY::$ME['PUBLIC_KEY'] ?>&where='.concat(encodeURIComponent(location.toString()),'&title=',encodeURIComponent(document.title));
+
+            var fallback = function() {
+                u = u.concat('&mode=window','&nonce=',Math.random().toString());
+                var child = window.open(u, '<?= OVERLAY_WINDOW_NAME ?>', '<?= OVERLAY_WINDOW_PARAMS ?>');
+                if (child) {
+                    addEventListener('message', function (e) {
+                        if (e.origin == u) {
+                            console.info(e.data);
+                            eval(e.data);
+                        } else {
+                            console.warn(e);
+                        }
+                    });
+                } else {
+                    alert('Error open window. Should be enabled in your browser');
+                }
+            };
+
             try {
-                eval('console.info(\'eval allowed\');');
+                eval('var a=1;');
+                var x = new XMLHttpRequest();
+                x.open('GET', u.concat('&mode=inline'), false);
+                x.withCredentials = true;
+                x.send(null);
             } catch (e) {
-                console.warn('eval not allowed');
-                var chld = window.open(u.concat('&mode=window'), '<?= OVERLAY_WINDOW_NAME ?>', '<?= OVERLAY_WINDOW_PARAMS ?>');
-                if (!chld) alert('Error open window');
+                console.warn(e);
+                fallback();
                 return;
             }
-
-            var x = new XMLHttpRequest();
-            x.open('GET', u.concat('&mode=inline'), false);
-            x.withCredentials = true;
-            x.send(null);
             if(x.status == 200) {
                 eval(x.responseText);
             } else {

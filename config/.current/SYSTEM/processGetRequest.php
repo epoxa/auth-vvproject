@@ -123,25 +123,24 @@ if ($viewId === 'boot') {
 
     } else /* if (Utils::IsSessionValid()) */ {
 
+        if (!YY::$ME) {
+            YY::createNewIncarnation(true);
+        } else if (!Utils::IsSessionValid()) {
+            Utils::StartSession(YY::$ME->_YYID);
+        }
+
+        $_SESSION['auth_guest'] = $_GET['guest'];
+        $_SESSION['auth_challenge'] = YY::GenerateNewYYID();
+        $_SESSION['original_request'] = $_SERVER['REQUEST_URI'];
+        $_SESSION['auth_where'] = $_GET['where'];
 
         if ($isWindowed) {
 
-            echo "Unimplemented boot case :(";
+            header("Location: /?view=authenticate&mode=window");
+            exit;
 
         } else {
 
-            if (!YY::$ME) {
-                YY::createNewIncarnation(true);
-            } else if (!Utils::IsSessionValid()) {
-                Utils::StartSession(YY::$ME->_YYID);
-            }
-
-            $_SESSION['auth_guest'] = $_GET['guest'];
-            $_SESSION['auth_challenge'] = YY::GenerateNewYYID();
-            $_SESSION['original_request'] = $_SERVER['REQUEST_URI'];
-            $_SESSION['auth_where'] = $_GET['where'];
-//            echo "alert('SESSION_ID = " . session_id() . "');";
-//            echo "alert(" . json_encode(print_r($_SESSION, true)) . ");";
             YY::DrawEngine('template-authenticate-request-script.php');
 
         }
@@ -149,6 +148,8 @@ if ($viewId === 'boot') {
     }
 
 } else if ($viewId === 'authenticate') {
+
+    $isWindowed = isset($_GET['mode']) && $_GET['mode'] === 'window';
 
     if (Utils::IsSessionValid() && isset($_SESSION['auth_guest'], $_SESSION['auth_challenge']) && preg_match('/^[0-9a-f]{32}$/', $_SESSION['auth_guest'])) {
 
@@ -169,6 +170,8 @@ if ($viewId === 'boot') {
                     $main = YY::Config('user')->getMainCurator();
                     $main->setPage('success');
                     $script = "location.reload();";
+                } else if ($isWindowed) {
+                    header("Location: $_SESSION[original_request]");
                 } else {
                     $script = YY::Config('user')->getBookmarkletScript();
                 }
@@ -178,10 +181,14 @@ if ($viewId === 'boot') {
                 unset($_SESSION['auth_guest'], $_SESSION['auth_challenge']);
                 $script = "location='https://$_SERVER[HTTP_HOST]/?lang=$guest[LANGUAGE]';";
             }
-            YY::DrawEngine('template-boot-proxy.php', [
-                'script' => $script,
-                'where' => $_SESSION['auth_where'],
-            ]);
+            if ($isWindowed) {
+
+            } else {
+                YY::DrawEngine('template-boot-proxy.php', [
+                    'script' => $script,
+                    'where' => $_SESSION['auth_where'],
+                ]);
+            }
             unset($_SESSION['auth_guest'], $_SESSION['auth_challenge'], $_SESSION['original_request'], $_SESSION['auth_where']);
 
         } else {
@@ -193,7 +200,7 @@ if ($viewId === 'boot') {
 
     } else {
 
-        echo "SESSION_ID: " . session_id();
+        echo "Something went wrong. SESSION_ID: " . session_id();
 
     }
 

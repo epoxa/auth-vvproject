@@ -1,5 +1,9 @@
 <?php
 
+if (empty($_GET['code'])) {
+    die("No code provided");
+}
+
 $curl = curl_init('https://web/token');
 
 curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
@@ -45,7 +49,7 @@ if ($error) {
 ?>
 <html>
 <head>
-    <title>Overlay</title>
+    <title><?= $json['page_title'] ?? 'Overlay' ?></title>
 </head>
 <body>
 <p>User info:</p>

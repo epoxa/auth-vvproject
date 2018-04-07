@@ -3,4 +3,4 @@
 cd $(cd $(dirname $0) && pwd)/../../
 
 ./vendor/bin/phpunit --verbose
-#./vendor/bin/phpunit --filter test_language_edit_mode
+#./vendor/bin/phpunit --filter yandex

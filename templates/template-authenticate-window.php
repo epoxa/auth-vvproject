@@ -72,7 +72,7 @@ use YY\System\YY;
         var key = localStorage.getItem('auth-<?= $_SESSION['auth_guest'] ?>');
         var challenge = '<?= $_SESSION['auth_challenge'] ?>';
         var answer = key ? md5(challenge.concat(key)) : '00000000000000000000000000000000';
-        location.replace('?view=authenticate&secret='.concat(answer));
+        location.search = location.search.concat('&secret=', answer);
     </script>
 
 </head>

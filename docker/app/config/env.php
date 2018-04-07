@@ -8,10 +8,10 @@ $_SERVER['ENV'] = array (
   array (
     0 => '127.0.0.1',
   ),
-  'YY_OVERLAY_URL' => 'https://overlay?PHPUNIT_SELENIUM_TEST_ID=TestOverlay__test_overlay',
+  'YY_OVERLAY_URL' => 'https://overlay?PHPUNIT_SELENIUM_TEST_ID=TestOverlay__test_overlay_yandex',
   'YY_TESTS' => 
   array (
-    'YY_TEST_BROWSER' => 'firefox',
+    'YY_TEST_BROWSER' => 'chrome',
     'YY_TEST_SELENIUM_PORT' => 4444,
     'YY_TEST_SELENIUM_HOST' => 'hub',
     'YY_TEST_BASE_URL' => 'https://web/',
