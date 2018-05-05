@@ -30,6 +30,7 @@ class Main extends Robot
         } else {
             $this['page'] = $this[$pageKind] = $this->makePage($pageKind);
         }
+        return $this['page'];
     }
 
     protected function makePage($kind)

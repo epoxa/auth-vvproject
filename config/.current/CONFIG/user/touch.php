@@ -6,7 +6,7 @@ $user = $_params['user'];
 
 $now = time();
 
-$lastActivity = empty($user['LAST_ACTIVITY']) ? null : $user['LAST_ACTIVITY'];
+$lastActivity = empty($user['LAST_ACTIVITY']) ? 0 : $user['LAST_ACTIVITY'];
 
 if (empty($user['CAME_DATE'])) {
     $user['CAME_DATE'] = $now;

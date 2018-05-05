@@ -1,6 +1,8 @@
 <?php
 
 use YY\Auth\Aim;
+use YY\Auth\Main;
+use YY\Auth\Recover;
 use YY\Develop\Assistant;
 use YY\Translation\Editor;
 use YY\Translation\LanguageSelector;
@@ -67,8 +69,10 @@ if (isset(YY::$CURRENT_VIEW['request']['build'])) {
             'redirect_uri' => YY::$CURRENT_VIEW['request']['redirect_uri'],
             'state' => YY::$CURRENT_VIEW['request']['state'],
         ]);
+
     }
 
+    /** @var Main $curator */
     $curator = YY::Config('user')->getMainCurator();
 
     YY::$CURRENT_VIEW['ROBOT'] = $curator;
@@ -111,6 +115,14 @@ if (isset(YY::$CURRENT_VIEW['request']['build'])) {
 
     if (isset(YY::$ME['translateMode'])) {
         YY::$CURRENT_VIEW['TRANSLATOR'] = new Agent();
+    }
+
+    if (preg_match('#^/recover(/|\?|$)#', YY::$CURRENT_VIEW['pathInfo'])) {
+        /** @var Recover $recover */
+        $recover = $curator->setPage('recover');
+        $public_key = isset(YY::$CURRENT_VIEW['request']['public']) ? YY::$CURRENT_VIEW['request']['public'] : null;
+        $private_key = isset(YY::$CURRENT_VIEW['request']['key']) ? YY::$CURRENT_VIEW['request']['key'] : null;
+        $recover->init($public_key, $private_key);
     }
 
 }

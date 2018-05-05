@@ -9,7 +9,7 @@ class TestOverlay extends AuthTestCase
 {
 
     private function setOverlayUrl($url) {
-        $_SERVER['ENV']['YY_OVERLAY_URL'] = $url;
+        $_SERVER['ENV']['LINKS']['OVERLAY'] = $url;
         file_put_contents(CONFIGS_DIR . 'env.php', "<?php\n\n\$_SERVER['ENV'] = " . var_export($_SERVER['ENV'], true) . ";");
     }
 
@@ -64,9 +64,52 @@ class TestOverlay extends AuthTestCase
         $this->assertEquals('public', $user['token_type']);
         $this->assertEquals('public', $user['scope']);
         $this->assertEquals($reg['name'], $user['name']);
+        $this->assertEquals($reg['public_key'], $user['public_key']);
         $this->assertEquals('en', $user['language']);
         $this->assertEquals('0', $user['age']);
         $this->assertEquals('1', $user['active_days']);
+        $this->assertEquals("http://foreign/", $user['page_url']); // Notice trailing slash emerged
+        $this->assertEquals("Foreign site", $user['page_title']);
+    }
+
+    public function test_csp()
+    {
+        $this->setOverlayUrl("https://overlay?PHPUNIT_SELENIUM_TEST_ID=" . $this->getTestId());
+        $this->url("/");
+        $reg = $this->quickReg();
+        $hWin = $this->windowHandle();
+
+        foreach ([
+            "http://foreign/unsafe-eval.php" => 'frame',
+            "http://foreign/no-eval.php" => $this->getBrowser() == 'chrome' ? 'frame' : 'window', // seems Chrome always allows eval from bookmarklet
+            "http://foreign/frame-src.php" => 'frame',
+            "http://101.ru/radio/channel/30" => 'window',
+        ] as $url => $mode) {
+            $this->window($hWin);
+            $this->frame(null);
+            $this->url($url);
+            $foreign_title = $this->title();
+            $this->pressBookmarklet();
+            if ($mode == 'frame') {
+                $this->frame('vvframe');
+            } else if ($mode == 'window') {
+                sleep(3);
+                $this->window(OVERLAY_WINDOW_NAME . '-' . $url);
+            } else if ($mode == 'inplace') {
+                sleep(4);
+            }
+//            $wh = $this->windowHandles();
+//            foreach ($wh as $idx => $w) {
+//                $this->window($w);
+//                fwrite(STDERR, "\nWindow $idx:" . $this->exec('return name') . "!\n");
+//            }
+
+            $json = $this->byCssSelector('pre.user-info')->text();
+            $user = json_decode($json, true);
+            $this->assertEquals($reg['name'], $user['name']);
+            $this->assertEquals($url, $user['page_url']);
+            $this->assertEquals($foreign_title, $user['page_title']);
+        }
     }
 
     public function test_overlay_yandex()
@@ -77,8 +120,9 @@ class TestOverlay extends AuthTestCase
         $reg = $this->quickReg();
         $this->url("http://ya.ru"); // Started with plain HTTP
         $yandex = $this->windowHandle();
+        $yaUrl = $this->url();
         $this->pressBookmarklet();
-        $this->window(OVERLAY_WINDOW_NAME);
+        $this->window(OVERLAY_WINDOW_NAME . '-' . $yaUrl);
         $json = $this->byCssSelector('pre.user-info')->text();
         $user = json_decode($json, true);
         $this->assertEquals('public', $user['access_token']);

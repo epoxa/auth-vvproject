@@ -2,6 +2,7 @@
 
 /** @var array $_params */
 
+use YY\Core\Data;
 use YY\System\YY;
 
 /** @var PDO $db */
@@ -64,11 +65,13 @@ if (isset($user['ID'])) {
     $affected = $db->exec($sql);
     if ($affected && !! $id = $db->lastInsertId('ID')) {
         $user['ID'] = $id;
+        /** @var Data $newbies */
         $newbies = YY::$WORLD['NEWBIES'];
         if (!$newbies->_acquireExclusiveAccess()) {
             throw new Exception('Can not lock newbies list');
         };
         unset($newbies[$user]);
+        $newbies->_releaseExclusiveAccess();
     } else {
         $err = $db->errorInfo();
         throw new Exception(array_pop($err));

@@ -7,10 +7,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update env.php
-          command: |
-            sed -e "s/'YY_TEST_BROWSER' => '.*'/'YY_TEST_BROWSER' => '${YY_TEST_BROWSER}'/" -i docker/app/config/env.php
-      - run:
           name: Run tests
           command: |
             ./tests/run-all-in-docker.sh

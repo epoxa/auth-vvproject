@@ -15,7 +15,7 @@ curl_setopt($curl, CURLOPT_POSTFIELDS, [
 ]);
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
-$result = $json = $error = null;
+$result = $json = $error = $httpCode = null;
 try {
     $result = curl_exec($curl);
 } catch (Exception $e) {

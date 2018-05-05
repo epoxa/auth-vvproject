@@ -7,6 +7,8 @@ if (isset($_params['ID'])) {
     $cond = "ID = $_params[ID]";
 } else if (isset($_params['PUBLIC_KEY'])) {
     $cond = "PUBLIC_KEY = '$_params[PUBLIC_KEY]'";
+} else if (isset($_params['CURRENT_KEY'])) {
+    $cond = "CURRENT_KEY = '$_params[CURRENT_KEY]'";
 } else {
     throw new Exception('No condition for load user from database');
 }
@@ -29,10 +31,15 @@ if ($existing) {
 } else {
 
     $data['_YYID'] = $data['INCARNATION'];
-    $data['nameConfirmed']  = true;
+    $data['nameConfirmed']  = true; // TODO: Really? Why??
     $user = new YY($data);
     $user->_REF;
     $user['VIEWS'] = [];
+    foreach($this['storedProperties'] as $propKey => $type) {
+        if ($type === 'date') {
+            $user[$propKey] = strtotime($user[$propKey]);
+        }
+    }
 
 }
 

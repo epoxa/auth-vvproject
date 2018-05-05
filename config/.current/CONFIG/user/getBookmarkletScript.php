@@ -13,14 +13,14 @@ ob_start()
 
         <?php /* START SCRIPT */ ?>
         (function () {
-            var u = 'https://<?= $_SERVER['HTTP_HOST'] ?>/?view=boot&version=<?= BOOT_VERSION ?>&guest=<?= YY::$ME['PUBLIC_KEY'] ?>&where='.concat(encodeURIComponent(location.toString()),'&title=',encodeURIComponent(document.title));
+            var u = 'https://<?= $_SERVER['HTTP_HOST'] ?>/?view=boot&version=<?= BOOT_VERSION ?>&guest=<?= YY::$ME['PUBLIC_KEY'] ?>&where='.concat(encodeURIComponent(location.href),'&title=',encodeURIComponent(document.title),'&nonce=',Math.random().toString());
 
             var fallback = function() {
-                u = u.concat('&mode=window','&nonce=',Math.random().toString());
-                var child = window.open(u, '<?= OVERLAY_WINDOW_NAME ?>', '<?= OVERLAY_WINDOW_PARAMS ?>');
+                var w = u.concat('&mode=window');
+                var child = window.open(w, '<?= OVERLAY_WINDOW_NAME ?>-'.concat(location.href), '<?= OVERLAY_WINDOW_PARAMS ?>');
                 if (child) {
                     addEventListener('message', function (e) {
-                        if (e.origin == u) {
+                        if (e.origin == w) {
                             console.info(e.data);
                             eval(e.data);
                         } else {
@@ -37,16 +37,15 @@ ob_start()
                 var x = new XMLHttpRequest();
                 x.open('GET', u.concat('&mode=inline'), false);
                 x.withCredentials = true;
-                x.send(null);
+                x.send();
+                if(x.status == 200) {
+                    eval(x.responseText);
+                } else {
+                    throw new XMLHttpRequestException();
+                }
             } catch (e) {
                 console.warn(e);
                 fallback();
-                return;
-            }
-            if(x.status == 200) {
-                eval(x.responseText);
-            } else {
-                alert(x.statusText);
             }
         })();
         <?php /* END SCRIPT */ ?>

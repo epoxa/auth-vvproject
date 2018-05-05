@@ -30,11 +30,26 @@ if ($viewId === 'boot') {
         || !preg_match('/^[0-9a-f]{32}$/', $_GET['guest'])
         || $_GET['version'] < BOOT_MIN_VERSION
     ) {
-        if ($isWindowed) {
-            YY::DrawEngine('template-wrong-bookmarklet-window.php');
-        } else {
-            YY::DrawEngine('template-wrong-bookmarklet-script.php');
+        // TODO: Seems we're not ready for translation
+        $errorMessage = YY::Translate('Your bookmarklet is outdated. Update now?');
+        $recoverUrl = 'https://' . ROOT_URL . "recover";
+        if (isset($_GET['version'], $_GET['key']) && $_GET['version'] == '4' && preg_match('/^[0-9a-f]{32}$/', $_GET['key'])) {
+            $user = YY::Config('user')->loadFromDatabase([
+                'CURRENT_KEY' => $_GET['key'],
+            ]);
+            if ($user) {
+                $recoverUrl .= '?public=' . $user['PUBLIC_KEY'] . '&key=' . $_GET['key'];
+            }
+        } else if (isset($_GET['guest']) && preg_match('/^[0-9a-f]{32}$/', $_GET['guest'])) {
+            $recoverUrl .= '?public=' . $_GET['guest'];
         }
+        YY::DrawEngine(
+            $isWindowed ? 'template-wrong-bookmarklet-window.php' : 'template-wrong-bookmarklet-script.php',
+            [
+                'errorMessage' => $errorMessage,
+                'recoverUrl' => $recoverUrl,
+            ]
+        );
         exit;
     };
 
@@ -69,7 +84,7 @@ if ($viewId === 'boot') {
         } else {
 
             // On foreign sites we can:
-            // 1) call default vvproject for unregistered sites,
+            // 1) call default overlay web.vvproject.com for unregistered sites,
             // 2) authenticate user on the site,
             // 3) show site menu,
             // ... etc
@@ -96,7 +111,7 @@ if ($viewId === 'boot') {
                 } else {
 
                     $errorMessage = YY::Translate('Something went wrong sorry');
-                    $errorMessage = json_encode($errorMessagtee);
+                    $errorMessage = json_encode($errorMessage);
                     echo "alert($errorMessage)";
                 }
 
@@ -107,14 +122,29 @@ if ($viewId === 'boot') {
                     'state' => 'public',
                     'where' => $_GET['where'],
                     'title' => $_GET['title'],
-                    'redirect_uri' => $_SERVER['ENV']['YY_OVERLAY_URL'],
+                    'redirect_uri' => $_SERVER['ENV']['LINKS']['OVERLAY'],
 //                    'mode' // TODO
                 ]);
 
                 if ($isWindowed) {
-                    YY::DrawEngine('template-windowed-margin.php', ['overlay_url' => $full_overlay_url]);
+
+                    YY::DrawEngine('template-windowed-margin.php', [
+                        'overlay_url' => $full_overlay_url
+                    ]);
+
                 } else {
-                    YY::DrawEngine('template-page-margin.php', ['overlay_url' => $full_overlay_url]);
+
+                    $token = YY::Config('tokens')->create([
+                        'data' => [
+                            'overlay_url' => $full_overlay_url,
+                            'guest' => YY::$ME['PUBLIC_KEY'],
+                            'where' => $_GET['where'],
+                        ],
+                    ]);
+                    YY::DrawEngine('template-page-margin.php', [
+                        'overlay_url' => $full_overlay_url,
+                        'redirect_token' => $token,
+                    ]);
                 }
 
             }
@@ -124,7 +154,7 @@ if ($viewId === 'boot') {
     } else /* if (Utils::IsSessionValid()) */ {
 
         if (!YY::$ME) {
-            YY::createNewIncarnation(true);
+            YY::createNewIncarnation();
         } else if (!Utils::IsSessionValid()) {
             Utils::StartSession(YY::$ME->_YYID);
         }
@@ -158,10 +188,12 @@ if ($viewId === 'boot') {
             $guest = YY::Config('user')->loadFromDatabase([
                 'PUBLIC_KEY' => $_SESSION['auth_guest'],
             ]);
-            $loginOk =
-                $guest && $_GET['secret'] === md5($_SESSION['auth_challenge'] . substr($guest['CURRENT_KEY'], -16))
-                && $_COOKIE['auth-' . $_SESSION['auth_guest']] === substr($guest['CURRENT_KEY'], 0, 16);
-            $where = $_SESSION['auth_where'];
+            $authIndex = 'auth-' . $_SESSION['auth_guest'];
+            $loginOk
+                = isset($guest, $_COOKIE[$authIndex])
+                && $_GET['secret'] === md5($_SESSION['auth_challenge'] . substr($guest['CURRENT_KEY'], -16))
+                && $_COOKIE[$authIndex] === substr($guest['CURRENT_KEY'], 0, 16);
+//            $where = $_SESSION['auth_where'];
             if ($loginOk) {
                 YY::$ME = $guest;
                 YY::$ME->_REF;
@@ -174,17 +206,34 @@ if ($viewId === 'boot') {
                     $script = "location.reload();";
                 } else if ($isWindowed) {
                     header("Location: $_SESSION[original_request]");
+                    exit;
                 } else {
                     $script = YY::Config('user')->getBookmarkletScript();
                 }
             } else {
-                $main = YY::Config('user')->getMainCurator();
-                $main->setPage('recover');
-                unset($_SESSION['auth_guest'], $_SESSION['auth_challenge']);
-                $script = "location='https://$_SERVER[HTTP_HOST]/?lang=$guest[LANGUAGE]';";
+                $recoverUrl = "https://$_SERVER[HTTP_HOST]/recover";
+                if ($guest) {
+                    $recoverUrl .= "?public=$guest[PUBLIC_KEY]&lang=$guest[LANGUAGE]";
+                }
+                ob_start();
+                YY::DrawEngine(
+                    'template-wrong-bookmarklet-script.php',
+                    [
+                        'errorMessage' => YY::Translate('Your bookmarklet is outdated. Update now?'),
+                        'recoverUrl' => $recoverUrl,
+                    ]
+                );
+                $script = ob_get_clean();
+//                $script = "location=" . json_encode($recoverUrl) . ";";
             }
             if ($isWindowed) {
-
+                YY::DrawEngine(
+                    'template-wrong-bookmarklet-window.php',
+                    [
+                        'errorMessage' => YY::Translate('Your bookmarklet is outdated. Update now?'),
+                        'recoverUrl' => $recoverUrl,
+                    ]
+                );
             } else {
                 YY::DrawEngine('template-boot-proxy.php', [
                     'script' => $script,
@@ -215,6 +264,18 @@ if ($viewId === 'boot') {
         'script' => $script,
         'where' => $_GET['where'],
     ]);
+} else if ($viewId === 'loader') {
+
+    $data = YY::Config('tokens')->utilize([
+        'token' => $_GET['token'],
+    ]);
+
+    if (isset($data, $data['guest'], $data['overlay_url'], $data['where']) && $data['guest'] === YY::$ME['PUBLIC_KEY']) {
+        YY::DrawEngine('template-iframe-loader.php', [
+            'redirect_url' => $data['overlay_url'],
+            'where' => $data['where'],
+        ]);
+    }
 
 } else if (isset($_GET['where'])) {
 
@@ -225,7 +286,7 @@ if ($viewId === 'boot') {
 } else if (isset(YY::$ME)) {
 
     Utils::StoreParamsInSession();
-    if ($_SERVER['QUERY_STRING']) {
+    if ($_SERVER['QUERY_STRING'] || !in_array($_SERVER['REQUEST_URI'], ['', '/'])) {
         Utils::RedirectRoot();
     }
     YY::DrawEngine("template-engine.php");

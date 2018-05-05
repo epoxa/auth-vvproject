@@ -2,8 +2,11 @@
 /**
  * @var array $params
  */
+use YY\System\YY;
+
 header('Content-type: text/javascript; charset=utf-8');
 $overlay_url = $params['overlay_url'];
+$redirect_token = $params['redirect_token'];
 ?>
 <?php ob_start(); ?>
 <script>
@@ -14,7 +17,39 @@ $overlay_url = $params['overlay_url'];
         console.log("vvproject is booting");
 
         var vv;
-        var subj;
+
+        window.VVProject = window.VVProject || {};
+        var $ = window.VVProject.auth = window.VVProject.auth || {};
+
+        function removeFrameGuards() {
+            clearTimeout($.childGuard);
+            removeEventListener('securitypolicyviolation', $.cspListener);
+        }
+
+        function giveUpLoadingFrame() {
+            removeFrameGuards();
+            closeChildFrame();
+            fallback();
+        }
+
+        function closeChildFrame() {
+            removeEventListener('message', $.frameListener);
+            var vv = document.getElementById('vvwindow');
+            if (vv) {
+                console.trace('close vvproject frame');
+                vv.parentNode.removeChild(vv);
+            }
+        }
+
+        function fallback() {
+            var vv = window.open(<?= json_encode($overlay_url) ?>, '<?= OVERLAY_WINDOW_NAME ?>-'.concat(location.href), '<?= OVERLAY_WINDOW_PARAMS ?>');
+            if (vv) {
+                console.log("Overlay will be loaded in separate window");
+            } else {
+                console.log("Overlay will be loaded in this window");
+                location.href = <?= json_encode($overlay_url) ?>;
+            }
+        }
 
         // Удаляем загрузчик
         while (vv = document.getElementById('vv')) {
@@ -29,13 +64,11 @@ $overlay_url = $params['overlay_url'];
         }
 
         if (!document.getElementsByTagName('body').length) {
-            console.log("Document body not found. Overlay will be loaded in separate window");
-            vv = window.open(<?= json_encode($overlay_url) ?>, '<?= OVERLAY_WINDOW_NAME ?>', '<?= OVERLAY_WINDOW_PARAMS ?>');
-            if (!vv) location.href = href;
+            fallback();
             return;
         }
 
-        console.log("vvproject window creating");
+        console.log("vvproject frame creating");
         vv = document.createElement('div');
         document.getElementsByTagName('body')[0].appendChild(vv);
         vv.id = 'vvwindow';
@@ -48,26 +81,65 @@ $overlay_url = $params['overlay_url'];
         vv.style.width = '20%';
         vv.style.zIndex = 2147483647;
 
-
-        vvh = document.createElement('div');
+        var vvh = document.createElement('div');
         vvh.style.position = 'absolute';
         vvh.style.visibility = 'hidden';
         vvh.style.zIndex = 2147483647;
         vv.appendChild(vvh);
         vv.vvh = vvh;
-        vvf = document.createElement('iframe');
+        var vvf = document.createElement('iframe');
         vvf.style.visibility = 'hidden';
         vvf.style.display = 'none';
-        vvf.onload = function() {vvf.style.visibility = 'visible'; vvf.style.display = 'block'};
+        vvf.onload = function() {
+            vvf.style.visibility = 'visible';
+            vvf.style.display = 'block';
+            vvf.focus();
+        };
         vvf.className = 'vv';
         vvf.id = 'vvframe';
         vvf.name = 'vvframe';
-        vvf.src = '';
-        vvf.src = <?= json_encode($params['overlay_url']) ?>;
-        vv.appendChild(vvf);
+
+        if (!$.cspListener) {
+            $.cspListener = function(e) {
+//                if (e.violatedDirective == 'frame-src' || e.violatedDirective == 'child-src')
+                console.warn(e);
+                giveUpLoadingFrame();
+            };
+        }
+
+        addEventListener('securitypolicyviolation', $.cspListener);
+
+
+        vvf.src = 'https://<?= $_SERVER['HTTP_HOST'] ?>/?view=loader&token=<?= $redirect_token ?>';
+
+        if ($.frameListener) {
+            // TODO: Create one universal listener for all cases
+            console.trace('Remove old child frame listener');
+            removeEventListener('message', $.frameListener)
+        }
+        $.frameListener = function (e) {
+            if (e.source == vvf.contentWindow) {
+                if (e.data == 'close') {
+                    closeChildFrame();
+                } else if (e.data == 'loading') {
+                    console.log('frame loading started successfully');
+                    removeFrameGuards();
+                }
+            }
+        };
+        addEventListener('message', $.frameListener);
+
         console.log("vvproject iframe set up");
+        vv.appendChild(vvf);
         vv.vvf = vvf;
-        vvf.focus(); // TODO: Похоже, из-за этого в ИЕ боди при первом открытии подсвечивается
+
+        $.childGuard = setTimeout(function() {
+            console.log('Frame still not loaded. Trying fallback window');
+            giveUpLoadingFrame();
+            removeEventListener('securitypolicyviolation', $.cspListener);
+            closeChildFrame();
+            fallback();
+        }, 1500);
 
         var vvt = document.getElementById('vvtheme');
         var src = location.protocol + '//<?= ROOT_URL ?>/css/marginalia.css';
@@ -81,19 +153,6 @@ $overlay_url = $params['overlay_url'];
             vvt.href = src;
             document.getElementsByTagName('head')[0].appendChild(vvt);
             console.log("vvproject styles inserted");
-        }
-
-        var receiveMessage = function(event){
-            if (event.data == 'close') {
-                var vv = document.getElementById('vvwindow');
-                if (vv) vv.parentNode.removeChild(vv);
-            }
-        };
-
-        if (window.addEventListener){
-            window.addEventListener("message",receiveMessage, false);
-        } else {
-            window.attachEvent("onmessage", receiveMessage);
         }
 
     })();

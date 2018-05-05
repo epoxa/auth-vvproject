@@ -5,8 +5,6 @@ define('CRON_MODE', php_sapi_name() === 'cli');
 ini_set('default_charset', 'utf-8');
 mb_internal_encoding("UTF-8");
 
-const BOOT_SERVERS = ['auth.yy.local'];
-
 define('ROOT_DIR', realpath(__DIR__ . '/..') . '/');
 
 const LOCK_DIR = ROOT_DIR . 'runtime/lock/';

@@ -29,9 +29,10 @@ class SuccessMessage extends Robot
         YY::$ME['curator']->setPage('info');
         unset(YY::$ME['curator']['successInstalledInfo']);
         if (isset($_SESSION['aim'])) {
+            /** @var Aim $aim */
             $aim = $_SESSION['aim'];
             unset($_SESSION['aim']);
-            $aim->{$aim['type']}(); // oauth, ...
+            $aim->achieve();
         };
     }
 

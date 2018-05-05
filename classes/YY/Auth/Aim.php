@@ -28,6 +28,11 @@ class Aim extends Data
         YY::Log('system', 'Aim created: ' . $init['redirect_uri']);
     }
 
+    public function achieve()
+    {
+        $this->{$this['type']}(); // oauth, ...
+    }
+
 
     public function oauth()
     {
@@ -51,7 +56,7 @@ class Aim extends Data
 
         } else {
 
-            YY::Log('system', 'Redirect impossible: ' . $this['redirect_uri']);
+            YY::Log('system', 'Redirect impossible (redirect_uri is empty)');
             $errorMessage = YY::Translate('Something went wrong sorry');
             $errorMessage = json_encode($errorMessage);
             YY::clientExecute("alert($errorMessage)");
