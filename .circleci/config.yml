@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  build:
+  run-chrome:
     working_directory: ~/auth
     machine:
       enabled: true
@@ -13,9 +13,36 @@ jobs:
       - run:
           name: Debug log
           command: |
+            export YY_TEST_BROWSER=chrome && |
             docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
       - store_artifacts:
           path: ./runtime
       - deploy:
           command:
             cd runtime/log && bash <(curl -s https://codecov.io/bash) ; cd ../..
+  run-firefox:
+    working_directory: ~/auth
+    machine:
+      enabled: true
+    steps:
+      - checkout
+      - run:
+          name: Run tests
+          command: |
+            export YY_TEST_BROWSER=firefox && |
+            ./tests/run-all-in-docker.sh
+      - run:
+          name: Debug log
+          command: |
+            docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
+      - store_artifacts:
+          path: ./runtime
+      - deploy:
+          command:
+            cd runtime/log && bash <(curl -s https://codecov.io/bash) ; cd ../..
+workflows:
+  version: 2
+  test_all:
+    jobs:
+      - run-chrome
+      - run-firefox

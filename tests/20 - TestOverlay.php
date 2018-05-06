@@ -146,8 +146,13 @@ class TestOverlay extends AuthTestCase
         try {
             $this->frame('vvframe'); // TODO: Почему-то иногда яндекс разрешает открывать фрейм.
         } catch(Exception $e) {
-            $this->window(OVERLAY_WINDOW_NAME);
+            try {
+                $this->window(OVERLAY_WINDOW_NAME);
+            } catch (Exception $e) {
+                sleep(3);
+            }
         }
+        sleep(3);
         $this->waitForEngine();
         $this->assertContains('Яндекс', $this->title());
         $this->assertContains('Вокруг Веба', $this->title());

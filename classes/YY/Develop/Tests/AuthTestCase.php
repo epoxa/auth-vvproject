@@ -30,7 +30,7 @@ class AuthTestCase extends BrowserTestCase
         $this->setDesiredCapabilities([
             'acceptSslCerts' => true,
             'acceptInsecureCerts' => true,
-//            'unexpectedAlertBehaviour' => 'ignore',
+//            'unhandledPromptBehavior' => 'ignore',
         ]);
 //        $this->shareSession(false);
         $this->setArtifactFolder(LOG_DIR);
@@ -39,16 +39,21 @@ class AuthTestCase extends BrowserTestCase
 
     public function setUpPage()
     {
-        // TODO: That's crazy!
-        if ($this->getBrowser() == 'firefox') {
-            $this->timeouts()->implicitWait(5000);
-        } else { // Chrome
-            $this->__call('timeouts', [
-                'pageLoad' => 5000,
-                'script'=> 5000,
-                'implicit' => 5000,
-            ]);
-        }
+        $this->__call('timeouts', [
+            'pageLoad' => 5000,
+            'script'=> 5000,
+            'implicit' => 5000,
+        ]);
+//        // TODO: That's crazy!
+//        if ($this->getBrowser() == 'firefox') {
+//            $this->timeouts()->implicitWait(5000);
+//        } else { // Chrome
+//            $this->__call('timeouts', [
+//                'pageLoad' => 5000,
+//                'script'=> 5000,
+//                'implicit' => 5000,
+//            ]);
+//        }
     }
 
     protected function quickReg($full = true)

@@ -172,7 +172,6 @@ class TestAuthentication extends AuthTestCase
         $this->assertTextPresent('Recover');
         $this->assertTextPresent($data['name']);
         $this->byLinkText("Done")->click();
-        sleep(1); // TODO
         $warning = $this->alertText();
         $this->acceptAlert();
         $this->assertEquals('Enter your secret key please.', $warning);
@@ -181,12 +180,11 @@ class TestAuthentication extends AuthTestCase
         $warning = $this->alertText();
         $this->acceptAlert();
         $this->assertEquals('This key is invalid. Sorry.', $warning);
+        $this->byCssSelector('input.monospace')->clear();
         $this->byCssSelector('input.monospace')->value($data['access_key']);
-        return;
-        $this->byLinkText("Done")->click(); //  <<=== TODO: Тут почему-то падает
+        $this->byLinkText("Done")->click();
 
         // Again success
-        $this->url("/");
         $this->waitForEngine();
         $this->pressBookmarklet();
         $this->assertTextPresent('Bookmarklet installed');
@@ -196,16 +194,12 @@ class TestAuthentication extends AuthTestCase
         // Show/hide private access key
         $this->assertTextPresent($data['public_key']);
         $this->assertTextNotPresent($data['access_key']);
-//        $this->byLinkText("display")->click(); // Does not work
-        $this->exec('$($("span.pull-right a").get(0)).click();');
-        parent::waitUntil(function() {return $this->alertIsPresent();}, 3000);
+        $this->byLinkText("display")->click();
         $warning = $this->alertText();
-//        $this->assertTextNotPresent($data['access_key']);
         $this->acceptAlert();
-        $this->assertContains('Keep your key', $warning);
         $this->assertTextPresent($data['access_key']);
-//        $this->byLinkText("hide")->click();  // Does not work
-        $this->exec('$($("span.pull-right a").get(0)).click();');
+        $this->assertContains('Keep your key', $warning);
+        $this->byLinkText("hide")->click();  // Does not work
         $this->assertTextNotPresent($data['access_key']);
     }
 
