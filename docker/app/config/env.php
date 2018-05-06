@@ -15,7 +15,7 @@ $_SERVER['ENV'] = array (
   ),
   'YY_TESTS' => 
   array (
-    'YY_TEST_BROWSER' => 'firefox',
+    'YY_TEST_BROWSER' => 'chrome',
     'YY_TEST_SELENIUM_PORT' => 4444,
     'YY_TEST_SELENIUM_HOST' => 'hub',
     'YY_TEST_BASE_URL' => 'https://web/',

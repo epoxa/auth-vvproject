@@ -172,11 +172,13 @@ class TestAuthentication extends AuthTestCase
         $this->assertTextPresent('Recover');
         $this->assertTextPresent($data['name']);
         $this->byLinkText("Done")->click();
+        sleep(1); // TODO: Required on Travis and Circle somehow (but not locally)
         $warning = $this->alertText();
         $this->acceptAlert();
         $this->assertEquals('Enter your secret key please.', $warning);
         $this->byCssSelector('input.monospace')->value('1234567');
         $this->byLinkText("Done")->click();
+        sleep(1); // TODO: Required on Travis and Circle somehow (but not locally)
         $warning = $this->alertText();
         $this->acceptAlert();
         $this->assertEquals('This key is invalid. Sorry.', $warning);
