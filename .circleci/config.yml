@@ -9,11 +9,10 @@ jobs:
       - run:
           name: Run tests
           command: |
-            ./tests/run-all-in-docker.sh
+            export YY_TEST_BROWSER=chrome && ./tests/run-all-in-docker.sh
       - run:
           name: Debug log
           command: |
-            export YY_TEST_BROWSER=chrome && |
             docker-compose -f ./docker/docker-compose.yml -f ./docker/docker-compose.tests.override.yml logs
       - store_artifacts:
           path: ./runtime
@@ -29,8 +28,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            export YY_TEST_BROWSER=firefox && |
-            ./tests/run-all-in-docker.sh
+            export YY_TEST_BROWSER=firefox && ./tests/run-all-in-docker.sh
       - run:
           name: Debug log
           command: |
