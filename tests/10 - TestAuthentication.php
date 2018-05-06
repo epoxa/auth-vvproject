@@ -172,6 +172,7 @@ class TestAuthentication extends AuthTestCase
         $this->assertTextPresent('Recover');
         $this->assertTextPresent($data['name']);
         $this->byLinkText("Done")->click();
+        sleep(1); // TODO
         $warning = $this->alertText();
         $this->acceptAlert();
         $this->assertEquals('Enter your secret key please.', $warning);
