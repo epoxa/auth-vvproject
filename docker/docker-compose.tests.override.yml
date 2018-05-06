@@ -70,7 +70,7 @@ services:
       CHROMEDRIVER_WHITELISTED_IPS: ""
     expose:
       - "4444"
-  node-crome:
+  node-chrome:
     image: "selenium/node-chrome:3.11"
     links:
       - web
@@ -79,7 +79,7 @@ services:
       HUB_PORT_4444_TCP_ADDR: hub
       HUB_PORT_4444_TCP_PORT: 4444
   node-firefox:
-    image: "selenium/node-firefox:3.11"
+    image: "selenium/node-firefox:3.4"
     links:
       - web
       - hub

@@ -39,21 +39,17 @@ class AuthTestCase extends BrowserTestCase
 
     public function setUpPage()
     {
-        $this->__call('timeouts', [
-            'pageLoad' => 5000,
-            'script'=> 5000,
-            'implicit' => 5000,
-        ]);
-//        // TODO: That's crazy!
-//        if ($this->getBrowser() == 'firefox') {
-//            $this->timeouts()->implicitWait(5000);
-//        } else { // Chrome
-//            $this->__call('timeouts', [
-//                'pageLoad' => 5000,
-//                'script'=> 5000,
-//                'implicit' => 5000,
-//            ]);
-//        }
+        // TODO: That's crazy! But I can not manage to set up more recent version of firefox selenium-node  :(
+        if ($this->getBrowser() == 'firefox') {
+            $this->timeouts()->implicitWait(5000);
+        } else { // Chrome
+            $this->__call('timeouts', [
+                'pageLoad' => 5000,
+                'script'=> 5000,
+                'implicit' => 5000,
+            ]);
+        }
+        parent::setUpPage();
     }
 
     protected function quickReg($full = true)

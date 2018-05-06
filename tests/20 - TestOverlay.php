@@ -142,17 +142,17 @@ class TestOverlay extends AuthTestCase
         $this->byCssSelector('input.input__input')->submit();
         sleep(3);
         $this->assertContains('Вокруг Веба', $this->title());
+        $yaUrl = $this->url();
         $this->pressBookmarklet();
         try {
             $this->frame('vvframe'); // TODO: Почему-то иногда яндекс разрешает открывать фрейм.
         } catch(Exception $e) {
             try {
-                $this->window(OVERLAY_WINDOW_NAME);
+                $this->window(OVERLAY_WINDOW_NAME . '-' . $yaUrl);
             } catch (Exception $e) {
-                sleep(3);
+                sleep(5);
             }
         }
-        sleep(3);
         $this->waitForEngine();
         $this->assertContains('Яндекс', $this->title());
         $this->assertContains('Вокруг Веба', $this->title());
@@ -161,7 +161,7 @@ class TestOverlay extends AuthTestCase
         $this->assertContains('Яндекс', $user['page_title']);
         $this->assertContains('Вокруг Веба', $user['page_title']);
         $this->window($yandex);
-        $this->frame();
+        $this->frame(null);
         $this->assertTextPresent('Игры вокруг веба');
     }
 
