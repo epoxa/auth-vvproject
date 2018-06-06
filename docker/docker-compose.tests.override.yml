@@ -65,13 +65,13 @@ services:
     volumes:
       - ./app/overlay:/var/www/html
   hub:
-    image: "selenium/hub:3.11"
+    image: "selenium/hub:3.12"
     environment:
       CHROMEDRIVER_WHITELISTED_IPS: ""
     expose:
       - "4444"
   node-chrome:
-    image: "selenium/node-chrome:3.11"
+    image: "selenium/node-chrome:3.12"
     links:
       - web
       - hub

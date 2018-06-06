@@ -24,8 +24,9 @@ class NodeBuilder extends Robot
 	{
 		$is_active = $edit_name || $edit_value;
 		$is_object = is_object($property_value);
-		$is_empty = $is_object && !count(array_diff($property_value->_scalar_keys(), ['_path', '_source'])) && !count($property_value->_object_keys());
-		$is_expanded = $is_object && isset($this->expandedProperties[$property_name]);
+        $is_deleted = $is_object && $property_value->_DELETED;
+		$is_empty = $is_object && !$is_deleted && !count(array_diff($property_value->_scalar_keys(), ['_path', '_source'])) && !count($property_value->_object_keys());
+		$is_expanded = $is_object && !$is_deleted  && isset($this->expandedProperties[$property_name]);
 
 		// TODO: Это перенести в дейcтвия. Недопустимо менять чего-то в SHOW
 		if ($is_empty && $is_expanded) {
@@ -49,8 +50,10 @@ class NodeBuilder extends Robot
 		$brace_2 = '';
 		if ($is_object) {
 			echo "<div class='complex-property' style='border-top: 1px dotted silver'>";
-			if ($is_empty) {
-				echo "&middot";
+            if ($property_value->_DELETED) {
+                echo "&times;";
+            } else if ($is_empty) {
+				echo "&middot;";
 			} else if ($is_expanded) {
 				echo $this->HUMAN_COMMAND(null, '-', 'collapse', array('prop' => $property_name));
 			} else {
@@ -64,7 +67,7 @@ class NodeBuilder extends Robot
 				$brace_2 = '}';
 			}
 			// У объектов, считанных с диска, рисуем ссылку на редактирование в IDE
-			if (isset($property_value['_source'])) {
+			if (!$is_deleted && isset($property_value['_source'])) {
 				$sourcePath = $property_value['_source'];
 				$sourcePath = str_replace('\\', '\\\\', $sourcePath);
 				$visual = array(

@@ -120,6 +120,7 @@ class Recover extends Robot
             $message = YY::Translate('Enter your secret key please.');
             YY::clientExecute("alert('$message');");
         } else if ($this['private_key'] !== $this['incarnation']['CURRENT_KEY']) {
+            YY::Log('warning', 'Invalid key: ' . $this['private_key'] . '. Need ' . $this['incarnation']['CURRENT_KEY']);
             $message = YY::Translate('This key is invalid. Sorry.');
             YY::clientExecute("alert('$message');");
         } else {

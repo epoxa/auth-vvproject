@@ -13,6 +13,8 @@ class TestAuthentication extends AuthTestCase
         $this->url("/");
         $result = $this->title();
         $this->assertEquals("Authentication", $result);
+        $hasBigLanguageSelector = $this->isElementPresent('class name', 'fa-globe');
+        $this->assertTrue($hasBigLanguageSelector, 'Language selector not displayed');
 // assertText | //div[@id='_YY_0']/ul/li/a | Русский
         $result = $this->byXPath("//div[@id='_YY_0']/ul/li/a")->text();
         $this->assertEquals("Русский", $result);
@@ -203,6 +205,66 @@ class TestAuthentication extends AuthTestCase
         $this->assertContains('Keep your key', $warning);
         $this->byLinkText("hide")->click();  // Does not work
         $this->assertTextNotPresent($data['access_key']);
+
+        // Clear all and create session for a new character
+
+        $previousBookmarkletScript = $this->getBookmarkletScript();
+        $this->exec('localStorage.removeItem("auth-' . $data['public_key'] . '")');
+        $this->killSession();
+        $this->url("/");
+        $this->byCssSelector("a.btn-primary i.fa-plus")->click();
+        $this->byLinkText("English")->click(); // TODO: Seems "Русский" does not work
+        $this->byCssSelector("a.btn-default")->click();
+        $newBookmarkletScript = $this->byCssSelector("a.bm-template")->attribute("href");
+        $newBookmarkletScript = preg_replace('/^javascript:/','',$newBookmarkletScript);
+        $newBookmarkletScript = urldecode($newBookmarkletScript);
+
+        // Try to log in as previous character
+
+        $this->url("/");
+        $this->waitForEngine();
+        $this->exec($previousBookmarkletScript);
+        // TODO: Somehow "unexpected alert open" error emerges
+//        $warning = $this->alertText();
+//        $this->assertEquals('Keep your key securely to prevent character stealing!', $warning);
+        sleep(2);
+        $this->acceptAlert();
+        $this->assertTextNotPresent('Bookmarklet installed');
+        $this->assertTextNotPresent('Hello ' . $data['name']);
+
+        // Recover
+
+        $this->assertTextPresent('Recover');
+        $this->assertTextPresent($data['name']);
+        sleep(1); // TODO: Required on Travis and Circle somehow (but not locally)
+        $this->byCssSelector('input.monospace')->value($data['access_key']);
+        $this->byLinkText("Done")->click();
+        $this->assertTextPresent($data['name']);
+        $this->assertTextPresent('Drag it');
+        $this->exec($previousBookmarkletScript);
+        $this->waitForEngine();
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        $hasBigLanguageSelector = $this->isElementPresent('class name', 'fa-globe');
+        $this->assertFalse($hasBigLanguageSelector, 'Language selector displayed');
+
+        // Both bookmarklets work
+
+//        $this->killSession();
+//        $this->exec($newBookmarkletScript);
+//        $this->acceptAlert(); // Your bookmarklet is outdated
+//        $this->assertTextPresent('Something went wrong');
+//        $this->assertTextNotPresent($data['name']);
+
+        $this->killSession();
+        $this->exec($previousBookmarkletScript);
+        usleep(100000);
+        $this->assertTextPresent('Bookmarklet installed');
+        $this->assertTextPresent('Hello ' . $data['name']);
+        sleep(1);
+        $hasBigLanguageSelector = $this->isElementPresent('class name', 'fa-globe');
+        $this->assertFalse($hasBigLanguageSelector, 'Language selector displayed');
+
     }
 
     function test_relogin_from_bookmarklet()

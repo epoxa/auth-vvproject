@@ -2,6 +2,7 @@
 
 namespace YY\Develop\Tests;
 
+use PHPUnit_Extensions_Selenium2TestCase_SessionStrategy_Isolated;
 use SebastianBergmann\ObjectEnumerator\Exception;
 use YY\Develop\BrowserTestCase;
 
@@ -33,6 +34,7 @@ class AuthTestCase extends BrowserTestCase
 //            'unhandledPromptBehavior' => 'ignore',
         ]);
 //        $this->shareSession(false);
+        self::$sessionStrategy = new PHPUnit_Extensions_Selenium2TestCase_SessionStrategy_Isolated();
         $this->setArtifactFolder(LOG_DIR);
         parent::setUp();
     }

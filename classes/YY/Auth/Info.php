@@ -57,7 +57,9 @@ class Info extends Robot
                     </td>
                 </tr>
             </table>
-
+            <div class="col-md-12 text-center">
+                <?= $this->CMD("Done", 'done', ['class' => 'btn btn-primary']) ?>
+            </div>
         </div>
         <?php
     }
@@ -80,4 +82,17 @@ class Info extends Robot
         YY::$ME['curator']['creator']['languageConfirmed'] = true;
     }
 
+    function done()
+    {
+        YY::$ME['curator']->setPage('info');
+        unset(YY::$ME['curator']['successInstalledInfo']);
+        if (isset($_SESSION['aim'])) {
+            /** @var Aim $aim */
+            $aim = $_SESSION['aim'];
+            unset($_SESSION['aim']);
+            $aim->achieve();
+        } else {
+            YY::redirectUrl($_SERVER['ENV']['LINKS']['MAIN']);
+        };
+    }
 }

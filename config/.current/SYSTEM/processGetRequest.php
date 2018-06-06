@@ -31,6 +31,7 @@ if ($viewId === 'boot') {
         || $_GET['version'] < BOOT_MIN_VERSION
     ) {
         // TODO: Seems we're not ready for translation
+        YY::Log('warning', 'Wrong bookmarklet, $_GET=' . print_r($_GET, true));
         $errorMessage = YY::Translate('Your bookmarklet is outdated. Update now?');
         $recoverUrl = 'https://' . ROOT_URL . "recover";
         if (isset($_GET['version'], $_GET['key']) && $_GET['version'] == '4' && preg_match('/^[0-9a-f]{32}$/', $_GET['key'])) {
@@ -213,9 +214,11 @@ if ($viewId === 'boot') {
             } else {
                 $recoverUrl = "https://$_SERVER[HTTP_HOST]/recover";
                 if ($guest) {
-                    $recoverUrl .= "?public=$guest[PUBLIC_KEY]&lang=$guest[LANGUAGE]";
+                    $lang = isset($guest['LANGUAGE'])?$guest['LANGUAGE']:'';
+                    $recoverUrl .= "?public=$guest[PUBLIC_KEY]&lang=$lang";
                 }
                 ob_start();
+                YY::Log('warning', 'Authentication failed, $_GET=' . print_r($_GET, true));
                 YY::DrawEngine(
                     'template-wrong-bookmarklet-script.php',
                     [
@@ -227,6 +230,7 @@ if ($viewId === 'boot') {
 //                $script = "location=" . json_encode($recoverUrl) . ";";
             }
             if ($isWindowed) {
+                YY::Log('warning', 'Authentication failed, $_GET=' . print_r($_GET, true));
                 YY::DrawEngine(
                     'template-wrong-bookmarklet-window.php',
                     [

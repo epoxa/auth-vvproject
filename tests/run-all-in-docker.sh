@@ -12,4 +12,4 @@ docker-compose -f ./docker/docker-compose.yml exec php /var/www/html/docker/sh/s
 rm -rfd runtime/data/*
 
 # Run tests
-docker-compose -f ./docker/docker-compose.yml exec php /var/www/html/docker/sh/run-tests.sh
+docker-compose -f ./docker/docker-compose.yml exec php /var/www/html/docker/sh/run-tests.sh "$1"
